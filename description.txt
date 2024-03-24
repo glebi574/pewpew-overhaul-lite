@@ -1,0 +1,390 @@
+
+PPOL(ppol) - pewpew-overhail-lite ; v0.1
+
+This is ppol, lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. Currently ppol is only compatible with singleplayer(as there are no way to create custom multiplayer levels).
+
+To include ppol in your level, copy ppol folder in your level folder. In the beginning of the file, that is the entry point of your level, defined in manifest.json (usually level.lua), require ppol entry point:
+
+require'/dynamic/ppol/.lua'
+
+I assume, that you'll copy ppol directly in your level folder, but if you need to place it somewhere else, just modify ppo_require function in ppol\.lua so it returns the correct path of ppol files.
+
+ppol includes some functions for debugging and testing. To not load them, create global variable PPO_NDEBUG before requiring ppol and set it to value other than nil.
+
+
+### basic changes ###
+
+
+require - now automatically wraps path, considering pewpew's need to use /dynamic/ and restriction to use only .lua file.
+
+require'functions' -- similar to require'/dynamic/functions.lua'
+
+print - now can also print fx values
+
+
+### ppol functions ###
+
+
+mpath(path) - wraps path as '/dynamic/' .. path .. '.lua'
+
+ppo_require(...) - requires all inputed paths. Automatically wraps them as 'ppol/' .. mpath(path). Usually you won't need to call this function, it is used by ppol to require its files.
+
+emoji_error, emoji_warning, emoji_nice - set of emojis(strings), that can be used in console
+
+
+### debugging tools ###
+
+
+debug_print_contents(arr) - prints every key-value pair, contained in table and amount of them. Sorts output by first letter.
+
+
+### tests ###
+
+
+test_print() - automatically tests all possible inputs of print().
+
+
+### fmath changes ###
+
+
+fmath is removed
+
+fmath.max_fixedpoint() -> FX_MAX - now value, not a function
+
+fmath.random_fixedpoint(a, b) -> fx_random(a, b) - now input can vary. With no input returns random fx in range [0; 1]. With 1 argument returns random fx in range [0; a]. With 2 arguments returns random fx in range [a; b].
+
+fmath.random_int(a, b) -> random(a, b)
+
+fmath.sqrt(a) -> fx_sqrt(a)
+
+fmath.from_fraction(a, b) - removed
+
+fmath.to_int(a) -> to_int(a)
+
+fmath.abs_fixedpoint(a) -> fx_abs(a)
+
+fmath.to_fixedpoint(a) -> to_fx(a)
+
+fmath.sincos(a) -> fx_sincos(a)
+
+fmath.atan2(y, x) -> fx_atan2(y, x)
+
+fmath.tau() -> FX_TAU - now value, not a function
+
+
+all variables and functions:
+
+
+FX_TAU - fx value of tau
+FX_PI - fx value of pi
+FX_MAX - maximum value of fx
+FX_MIN - minimum value of fx(equal to -FX_MAX)
+FX_E - fx value of exponent
+
+fx_random(a, b)
+random(a, b)
+fx_sqrt(a)
+fx_abs(a)
+fx_sincos(a)
+fx_atan2(y, x)
+to_int(a)
+to_fx(a)
+
+some new functions are added:
+
+fx_floor(a)
+
+fx_ceil(a)
+
+fx_round(a)
+
+fx_fraction(a) - fraction part of fx number
+
+
+### pewpew changes ###
+
+
+pewpew is removed
+
+
+pewpew.EntityType -> entity_type - all names are now lower case, so pewpew.EntityType.ASTEROID now can be accessed as entity_type.asteroid . Only name of CUSTOMIZABLE_ENTITY was changed: entity_type.custom .
+
+pewpew.MothershipType -> mothership_type - doesn't use keys anymore, only indexes: pewpew.MothershipType.THREE_CORNERS now can be accessed as mothership_type[3] .
+
+pewpew.CannonType -> cannon_type - all names are now lower case.
+
+pewpew.CannonFrequency -> cannon_frequency - no 'FREQ' part, so pewpew.CannonFrequency.FREQ_30 now can be accessed as cannon_frequency._30 .
+
+pewpew.BombType -> bomb_type - all names are now lower case.
+
+pewpew.BonusType -> bonus_type - all names are now lower case.
+
+pewpew.WeaponType -> weapon_type - all names are now lower case.
+
+
+pewpew.print(str) - removed. Use print(...) instead, now it can print fx numbers.
+
+pewpew.print_debug_info() - removed. Same can be achieved by collectgarbage()
+
+pewpew.set_level_size(x, y) -> set_level_size(x, y) - now input can vary. With 1 argument, sets level size to x * x. With 2 arguments sets level size to x * y.
+
+pewpew.add_wall(x1, y1, x2, y2) -> add_wall(x1, y1, x2, y2)
+
+pewpew.remove_wall(id) -> remove_wall(id)
+
+pewpew.add_update_callback(f) -> add_update_callback(f)
+
+pewpew.get_number_of_players() - removed
+
+pewpew.increase_score_of_player(i, v) -> increase_score(v)
+
+pewpew.increase_score_streak_of_player(i, v) -> increase_score_streak(v)
+
+pewpew.get_score_streak_level(i) -> get_score_streak_level()
+
+pewpew.stop_game() -> stop_game()
+
+pewpew.get_player_inputs(i) -> get_inputs()
+
+pewpew.get_score_of_player(i) -> get_score()
+
+pewpew.configure_player(i, param) -> configure_player(param)
+
+pewpew.configure_player_hud(i, param) -> configure_hud_string(str) - original function only allows you to set 1 string in hud, so function arguments were simplified.
+
+pewpew.get_player_configuration(i) - removed. New functions are implemented to replace this one, they will be described below.
+
+pewpew.configure_player_ship_weapon(id, param) -> set_player_ship_weapon(id, frequency, cannon, duration) - if frequency isn't specified, it will be set to cannon_frequency._30 . If cannon type isn't specified, it will be set to cannon_type.single
+
+pewpew.add_damage_to_player_ship(id, v) -> damage_player_ship(id, v)
+
+pewpew.add_arrow_to_player_ship(ship_id, target_id, color) -> add_arrow(ship_id, target_id, color)
+
+pewpew.remove_arrow_from_player_ship(ship_id, arrow_id) -> remove_arrow(ship_id, arrow_id)
+
+pewpew.make_player_ship_transparent(id, duration) -> make_player_ship_transparent(id, duration)
+
+pewpew.set_player_ship_speed(id, factor, offset, duration) -> set_player_ship_speed(id, factor, offset, duration)
+
+pewpew.get_all_entities() -> get_all_entities()
+
+pewpew.get_entities_colliding_with_disk(x, y, r) -> get_entities_in(x, y, r)
+
+pewpew.get_entity_count(type) -> get_entity_count(type)
+
+pewpew.get_entity_type(id) -> get_entity_type(id)
+
+pewpew.play_ambient_sound(path, i) - removed. It was united with play_sound. See below.
+
+pewpew.play_sound(path, i, x, y) -> play_sound(path, ...) - now input can vary:
+  play_sound(path) plays ambient sound from file, described by path at index 0.
+  play_sound(path, i) plays ambient sound from file, described by path at index i.
+  play_sound(path, x, y) plays sound at (x; y) from file, described by path at index 0.
+  play_sound(path, x, y, i) plays sound at (x; y) from file, described by path at index i.
+
+pewpew.create_explosion(x, y, color, scale, particle_count) -> create_explosion(x, y, color, scale, particle_count)
+
+pewpew.new_asteroid_with_size(x, y, size) - removed. It was united with new_asteroid. See below.
+
+pewpew.new_asteroid(x, y) -> new_asteroid(x, y, size) - if size isn't specified, calls new_asteroid(), otherwise calls new_asteroid_with_size()
+
+pewpew.new_baf(x, y, angle, speed, lifetime) -> new_baf(x, y, angle, speed, lifetime) - if lifetime isn't specified, it's set to -1
+
+pewpew.new_baf_red(x, y, angle, speed, lifetime) -> new_baf_red(x, y, angle, speed, lifetime) - if lifetime isn't specified, it's set to -1
+
+pewpew.new_baf_blue(x, y, angle, speed, lifetime) -> new_baf_blue(x, y, angle, speed, lifetime) - if lifetime isn't specified, it's set to -1
+
+pewpew.new_bomb(x, y, type) -> new_bomb(x, y, type)
+
+pewpew.new_bonus(x, y, type, param) -> new_bonus(x, y, type, param)
+
+pewpew.new_crowder(x, y) -> new_crowder(x, y)
+
+pewpew.new_floating_message(x, y, str, param) -> new_message(x, y, str, scale, duration, is_optional)
+
+pewpew.new_customizable_entity(x, y) -> new_entity(x, y) - now automatically turns on position interpolation
+
+pewpew.new_inertiac(x, y, acceleration, angle) -> new_inertiac(x, y, acceleration, angle)
+
+pewpew.new_mothership(x, y, type, angle) -> new_mothership(x, y, type, angle)
+
+pewpew.new_pointonium(x, y, v) -> new_pointonium(x, y, v)
+
+pewpew.new_player_ship(x, y, i) -> new_player_ship(x, y)
+
+pewpew.new_player_bullet(x, y, angle, i) -> new_player_bullet(x, y, angle)
+
+pewpew.new_rolling_cube(x, y) -> new_rolling_cube(x, y)
+
+pewpew.new_rolling_sphere(x, y, angle, speed) -> new_rolling_sphere(x, y, angle, speed)
+
+pewpew.new_wary(x, y) -> new_wary(x, y)
+
+pewpew.new_ufo(x, y, dx) -> new_ufo(x, y, dx)
+
+pewpew.rolling_cube_set_enable_collisions_with_walls(id, v) -> rolling_cube_set_wall_collision(id, v) - if v isn't specified, sets it to true
+
+pewpew.ufo_set_enable_collisions_with_walls(id, v) -> ufo_set_wall_collision(id, v) - if v isn't specified, sets it to true
+
+pewpew.entity_get_position(id) -> entity_get_pos(id)
+
+pewpew.entity_get_is_alive(id) -> entity_is_alive(id)
+
+pewpew.entity_get_is_started_to_be_destroyed(id) -> entity_is_exploding(id)
+
+pewpew.entity_set_position(id, x, y) -> entity_set_pos(id, x, y)
+
+pewpew.entity_set_radius(id, r) -> entity_set_radius(id, r)
+
+pewpew.entity_set_update_callback(id, f) -> entity_set_update_callback(id, f)
+
+pewpew.entity_destroy(id) -> entity_destroy(id)
+
+pewpew.entity_react_to_weapon(id, param) -> entity_react_to_weapon(id, weapon_type, x, y)
+
+pewpew.customizable_entity_set_position_interpolation(id, v) - removed. Now it's called automatically on custom entity creation.
+
+customizable_entity_set_flipping_meshes(id, path, i1, i2) - removed. It was united with entity_set_mesh. See below.
+
+pewpew.customizable_entity_set_mesh(id, path, i) -> entity_set_mesh(id, path, ...) - now input can vary:
+  entity_set_mesh(id, path) - sets mesh of custom entity specified by id to mesh in file, described by path at index 0
+  entity_set_mesh(id, path, i) - sets mesh of custom entity specified by id to mesh in file, described by path at index i
+  entity_set_mesh(id, path, i1, i2) - sets flipping meshes of custom entity specified by id to meshes in file, described by path at indexes i1 and i2
+
+pewpew.customizable_entity_set_mesh_color(id, color) -> entity_set_mesh_color(id, color)
+
+pewpew.customizable_entity_set_string(id, str) -> entity_set_string(id, str)
+
+pewpew.customizable_entity_set_mesh_xyz(id, x, y, z) -> entity_set_mesh_xyz(id, x, y, z)
+
+pewpew.customizable_entity_set_mesh_z(id, z) - removed
+
+pewpew.customizable_entity_set_mesh_xyz_scale(id, x, y, z) - removed. It was united with entity_set_mesh_scale. See below.
+
+pewpew.customizable_entity_set_mesh_scale(id, scale) -> entity_set_mesh_scale(id, ...) - now input can vary:
+  entity_set_mesh_scale(id, v) - scales mesh by v
+  entity_set_mesh_scale(id, x, y) - scales mesh by (x, y, 1fx)
+  entity_set_mesh_scale(id, x, y, z) - scales mesh by (x, y, z)
+
+pewpew.customizable_entity_set_mesh_angle(id, angle, x, y, z) -> entity_set_mesh_angle(id, angle, x, y, z)
+
+pewpew.customizable_entity_skip_mesh_attributes_interpolation(id) - removed. Doesn't seem to work. If you want to skip incorrect interpolation during first 2 ticks of entity being created, just delay setting mesh to it by 2 ticks.
+
+pewpew.customizable_entity_configure_music_response(id, param) -> entity_set_music_sync(id, param)
+
+pewpew.customizable_entity_add_rotation_to_mesh(id, angle, x, y, z) -> entity_add_mesh_angle(id, angle, x, y, z)
+
+pewpew.customizable_entity_set_visibility_radius(id, r) -> entity_set_render_radius(id, r)
+
+pewpew.customizable_entity_configure_wall_collision(id, c, f) -> entity_set_wall_collision(id, c, f)
+
+pewpew.customizable_entity_set_player_collision_callback(id, f) -> entity_set_player_collision(id, f)
+
+pewpew.customizable_entity_set_weapon_collision_callback(id, f) -> entity_set_weapon_collision(id, f)
+
+pewpew.customizable_entity_start_spawning(id, duration) -> entity_start_spawning(id, duration)
+
+pewpew.customizable_entity_start_exploding(id, duration) -> entity_start_exploding(id, duration)
+
+
+all variables and functions:
+
+
+entity_type
+mothership_type
+cannon_type
+cannon_frequency
+bomb_type
+bonus_type
+weapon_type
+
+set_level_size(x, y)
+add_wall(x1, y1, x2, y2)
+remove_wall(id)
+add_update_callback(f)
+increase_score(v)
+increase_score_streak(v)
+get_score_streak_level()
+stop_game()
+get_inputs()
+get_score()
+configure_player(param)
+configure_hud_string(str)
+set_player_ship_weapon(id, frequency, cannon, duration)
+damage_player_ship(id, v)
+add_arrow(ship_id, target_id, color)
+remove_arrow(ship_id, arrow_id)
+make_player_ship_transparent(id, duration)
+set_player_ship_speed(id, factor, offset, duration)
+get_all_entities()
+get_entities_in(x, y, r)
+get_entity_count(type)
+get_entity_type(id)
+play_sound(path, ...)
+create_explosion(x, y, color, scale, particle_count)
+new_asteroid(x, y, size)
+new_baf(x, y, angle, speed, lifetime)
+new_baf_red(x, y, angle, speed, lifetime)
+new_baf_blue(x, y, angle, speed, lifetime)
+new_bomb(x, y, type)
+new_bonus(x, y, type, param)
+new_crowder(x, y)
+new_message(x, y, str, scale, duration, is_optional)
+new_entity(x, y)
+new_inertiac(x, y, acceleration, angle)
+new_mothership(x, y, type, angle)
+new_pointonium(x, y, v)
+new_player_ship(x, y)
+new_player_bullet(x, y, angle)
+new_rolling_cube(x, y)
+new_rolling_sphere(x, y, angle, speed)
+new_wary(x, y)
+new_ufo(x, y, dx)
+rolling_cube_set_wall_collision(id, v)
+ufo_set_wall_collision(id, v)
+entity_get_pos(id)
+entity_is_alive(id)
+entity_is_exploding(id)
+entity_set_pos(id, x, y)
+entity_set_radius(id, r)
+entity_set_update_callback(id, f)
+entity_destroy(id)
+entity_react_to_weapon(id, weapon_type, x, y)
+entity_set_mesh(id, path, ...)
+entity_set_mesh_color(id, color)
+entity_set_string(id, str)
+entity_set_mesh_xyz(id, x, y, z)
+entity_set_mesh_scale(id, ...)
+entity_set_mesh_angle(id, angle, x, y, z)
+entity_set_music_sync(id, param)
+entity_add_mesh_angle(id, angle, x, y, z)
+entity_set_render_radius(id, r)
+entity_set_wall_collision(id, c, f)
+entity_set_player_collision(id, f)
+entity_set_weapon_collision(id, f)
+entity_start_spawning(id, duration)
+entity_start_exploding(id, duration)
+
+some new functions are added:
+
+set_is_lost(v) - configures has_lost value of player configuration.
+
+set_shield(v) - configures shield value of player configuration.
+
+set_joystick_color(c1, c2) - configures move_joystick_color and shoot_joystick_color of player configuration.
+
+set_camera_pos(x, y, z) - configures camera_x_override, camera_y_override and camera_distance values of player configuration. If z isn't specified, it's set to 0fx(in game it's 1000fx). If z is specified, fixes it, so it starts from 0fx, not 1000fx.
+
+set_camera_z(z) - configures camera_distance value of player configuration. Fixes z, so it starts from 0fx, not 1000fx.
+
+set_camera_angle(x) - configures camera_rotation_x_axis value of player configuration.
+
+get_is_lost() - returns has_lost value of player configuration.
+
+get_shield() - returns shield value of player configuration.
+
+new_bonus_shield(x, y, shield, box_duration, callback) - creates new bonus with shield type and respective arguments.
+
+new_bonus_weapon(x, y, cannon, frequency, weapon_duration, box_duration, callback) - creates new bonus with weapon type and respective arguments.
+
+new_bonus_speed(x, y, speed_factor, speed_offset, speed_duration, box_duration, callback) - creates new bonus with speed type and respective arguments.

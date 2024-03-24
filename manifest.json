@@ -1,0 +1,7 @@
+{
+  "name":"ppol",
+  "descriptions":["pewpew-overhaul-lite"],
+  "information": "Ovarhauled pewpew API: renamed and optimized functions, new features.",
+  "entry_point":"level.lua",
+  "has_score_leaderboard":false
+}
