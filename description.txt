@@ -7,7 +7,7 @@ To include ppol in your level, copy ppol folder in your level folder. In the beg
 
 require'/dynamic/ppol/.lua'
 
-I assume, that you'll copy ppol directly in your level folder, but if you need to place it somewhere else, just modify ppo_require function in ppol\.lua so it returns the correct path of ppol files.
+I assume, that you'll copy ppol folder directly in your level folder, but if you need to place it somewhere else, just modify ppo_require function in ppol\.lua so it returns the correct path of ppol files.
 
 ppol includes some functions for debugging and testing. To not load them, create global variable PPO_NDEBUG before requiring ppol and set it to value other than nil.
 
