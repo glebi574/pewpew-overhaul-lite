@@ -92,16 +92,6 @@ fx_atan2(y, x)
 to_int(a)
 to_fx(a)
 
-some new functions are added:
-
-fx_floor(a)
-
-fx_ceil(a)
-
-fx_round(a)
-
-fx_fraction(a) - fraction part of fx number
-
 
 ### pewpew changes ###
 
