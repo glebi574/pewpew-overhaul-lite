@@ -43,6 +43,8 @@ debug_print_contents(arr) - prints every key-value pair, contained in table and 
 
 test_print() - automatically tests all possible inputs of print().
 
+add_memory_print() - adds update callback which forces garbage collection cycle and prints amount of used memory every tick.
+
 
 ### fmath changes ###
 
@@ -388,3 +390,5 @@ new_bonus_shield(x, y, shield, box_duration, callback) - creates new bonus with 
 new_bonus_weapon(x, y, cannon, frequency, weapon_duration, box_duration, callback) - creates new bonus with weapon type and respective arguments.
 
 new_bonus_speed(x, y, speed_factor, speed_offset, speed_duration, box_duration, callback) - creates new bonus with speed type and respective arguments.
+
+entity_change_pos(id, dx, dy) - changes position of entity, defined by id by dx and dy

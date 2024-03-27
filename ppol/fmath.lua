@@ -14,25 +14,7 @@ FX_E = 2.2942fx
 
 random = fmath.random_int
 
-function fx_floor(a)
-  return a // 1fx
-end
-
-function fx_ceil(a)
-  return (a + 1fx) // 1fx
-end
-
-function fx_round(a)
-  return (a + 0.2048fx) // 1fx
-end
-
-function fx_fraction(a)
-  return a % 1fx
-end
-
-local _fx_random = fmath.random_fixedpoint
+local r = fmath.random_fixedpoint
 function fx_random(a, b)
-  return not a and _fx_random(0fx, 1fx) or not b and _fx_random(0fx, a) or _fx_random(a, b)
+  return not a and r(0fx, 1fx) or not b and r(0fx, a) or r(a, b)
 end
-
-fmath = nil

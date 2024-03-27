@@ -72,6 +72,13 @@ weapon_type = {
   atomize_explosion = _wt.ATOMIZE_EXPLOSION,
 }
 
+_et = nil
+_ct = nil
+_cf = nil
+_bt = nil
+_nt = nil
+_wt = nil
+
 
 add_update_callback = pewpew.add_update_callback
 stop_game = pewpew.stop_game
@@ -119,128 +126,128 @@ entity_set_player_collision = pewpew.customizable_entity_set_player_collision_ca
 entity_set_weapon_collision = customizable_entity_set_weapon_collision_callback
 
 
-local inc_scr = pewpew.increase_score_of_player
+local is = pewpew.increase_score_of_player
 function increase_score(v)
-  return inc_scr(0, v)
+  return is(0, v)
 end
 
-local get_scr = pewpew.get_score_of_player
+local gs = pewpew.get_score_of_player
 function get_score()
-  return get_scr(0)
+  return gs(0)
 end
 
-local _get_inputs = pewpew.get_player_inputs
+local gi = pewpew.get_player_inputs
 function get_inputs()
-  return _get_inputs(0)
+  return gi(0)
 end
 
-local cfg_hud = pewpew.configure_player_hud
+local ch = pewpew.configure_player_hud
 function configure_hud_string(str)
-  return cfg_hud(0, {top_left_line = str})
+  return ch(0, {top_left_line = str})
 end
 
-local _play_sound = pewpew.play_sound
-local _play_soundA = pewpew.play_ambient_sound
+local ps = pewpew.play_sound
+local psa = pewpew.play_ambient_sound
 function play_sound(path, v1, v2, v3)
-  return v2 and _play_soundA(mpath(path), v1, v2, v3 or 0) or _play_sound(mpath(path), v1 or 0)
+  return v2 and psa(mpath(path), v1, v2, v3 or 0) or ps(mpath(path), v1 or 0)
 end
 
-local _new_entity = pewpew.new_customizable_entity
-local _entity_smooth = pewpew.customizable_entity_set_position_interpolation
+local ne = pewpew.new_customizable_entity
+local es = pewpew.customizable_entity_set_position_interpolation
 function new_entity(x, y)
-  local id = _new_entity(x, y)
-  _entity_smooth(id, true)
+  local id = ne(x, y)
+  es(id, true)
   return id
 end
 
-local _set_mesh = pewpew.customizable_entity_set_mesh
-local _set_anim = pewpew.entity_set_flipping_meshes
+local sm = pewpew.customizable_entity_set_mesh
+local sa = pewpew.entity_set_flipping_meshes
 function entity_set_mesh(id, path, i1, i2)
-  return i2 and _set_anim(id, mpath(path), i1, i2) or _set_mesh(id, mpath(path), i1 or 0)
+  return i2 and sa(id, mpath(path), i1, i2) or sm(id, mpath(path), i1 or 0)
 end
 
-local _set_scale = pewpew.customizable_entity_set_mesh_xyz_scale
+local ss = pewpew.customizable_entity_set_mesh_xyz_scale
 function entity_set_mesh_scale(id, x, y, z)
-  return _set_scale(id, x, y or x, z or y and 1fx or x)
+  return ss(id, x, y or x, z or y and 1fx or x)
 end
 
-local _conf = pewpew.configure_player
+local _c = pewpew.configure_player
 function configure_player(param)
-  return _conf(0, param)
+  return _c(0, param)
 end
 
 function set_is_lost(v)
-  return _conf(0, {has_lost = v})
+  return _c(0, {has_lost = v})
 end
 
 function set_shield(v)
-  return _conf(0, {shield = v})
+  return _c(0, {shield = v})
 end
 
 function set_joystick_color(c1, c2)
-  return _conf(0, {move_joystick_color = c1, shoot_joystick_color = c2})
+  return _c(0, {move_joystick_color = c1, shoot_joystick_color = c2})
 end
 
 function set_camera_pos(x, y, z)
-  return _conf(0, {camera_x_override = x, camera_y_override = y, camera_distance = z and z - 1000fx or 0fx})
+  return _c(0, {camera_x_override = x, camera_y_override = y, camera_distance = z and z - 1000fx or 0fx})
 end
 
 function set_camera_z(z)
-  return _conf(0, {camera_distance = z - 1000fx})
+  return _c(0, {camera_distance = z - 1000fx})
 end
 
 function set_camera_angle(x)
-  return _conf(0, {camera_rotation_x_axis = x})
+  return _c(0, {camera_rotation_x_axis = x})
 end
 
-local _gconf = pewpew.get_player_configuration
+local gc = pewpew.get_player_configuration
 function get_is_lost()
-  return _gconf(0).has_lost
+  return gc(0).has_lost
 end
 
 function get_shield()
-  return _gconf(0).shield
+  return gc(0).shield
 end
 
-local _set_size = pewpew.set_level_size
+local sz = pewpew.set_level_size
 function set_level_size(x, y)
-  return _set_size(x, y or x)
+  return sz(x, y or x)
 end
 
-local _inc_streak = pewpew.increase_score_streak_of_player
+local ir = pewpew.increase_score_streak_of_player
 function increase_score_streak(v)
-  return _inc_streak(0, v)
+  return ir(0, v)
 end
 
-local _get_streak = pewpew.get_score_streak_level
+local gr = pewpew.get_score_streak_level
 function get_score_streak_level()
-  return _get_streak(0)
+  return gr(0)
 end
 
-local _wconf = pewpew.configure_player_ship_weapon
+local wc = pewpew.configure_player_ship_weapon
 function set_player_ship_weapon(id, frequency, cannon, duration)
-  return _wconf(id, {frequency = frequency or 0, cannon = cannon or 0, duration = duration})
+  return wc(id, {frequency = frequency or 0, cannon = cannon or 0, duration = duration})
 end
 
-local _new_asteroid = pewpew.new_asteroid
-local _new_asteroidS = pewpew.new_asteroid_with_size
+local na = pewpew.new_asteroid
+local nas = pewpew.new_asteroid_with_size
 function new_asteroid(x, y, size)
-  return size and _new_asteroidS(x, y, size) or _new_asteroid(x, y)
+  return size and nas(x, y, size) or na(x, y)
 end
 
-local _new_baf = pewpew.new_baf
+local nb = pewpew.new_baf
 function new_baf(x, y, angle, speed, lifetime)
-  return _new_baf(x, y, angle, speed, lifetime or -1)
+  return nb(x, y, angle, speed, lifetime or -1)
 end
 
-local _new_bafR = pewpew.new_baf_red
+local nbr = pewpew.new_baf_red
 function new_baf_red(x, y, angle, speed, lifetime)
-  return _new_baf(x, y, angle, speed, lifetime or -1)
+  return nbr(x, y, angle, speed, lifetime or -1)
 end
 
-local _new_bafB = pewpew.new_baf_blue
+local nbb = pewpew.new_baf_blue
 function new_baf_blue(x, y, angle, speed, lifetime)
-  return _new_baf(x, y, angle, speed, lifetime or -1)
+  return nbb(x, y, angle, speed, lifetime or -1)
 end
 
 function new_bonus_shield(x, y, shield, box_duration, callback)
@@ -255,34 +262,37 @@ function new_bonus_speed(x, y, speed_factor, speed_offset, speed_duration, box_d
   return new_bonus(x, y, bonus_type.shield, {speed_factor = speed_factor, speed_offset = speed_offset, speed_duration = speed_duration, box_duration = box_duration, taken_callback = callback})
 end
 
-local _new_message = pewpew.new_floating_message
+local nm = pewpew.new_floating_message
 function new_message(x, y, str, scale, duration, is_optional)
-  return _new_message(x, y, str, {scale = scale, ticks_before_fade = duration, is_optional = is_optional})
+  return nm(x, y, str, {scale = scale, ticks_before_fade = duration, is_optional = is_optional})
 end
 
-local _new_ship = pewpew.new_player_ship
+local ns = pewpew.new_player_ship
 function new_player_ship(x, y)
-  return _new_ship(x, y, 0)
+  return ns(x, y, 0)
 end
 
-local _new_bullet = pewpew.new_player_bullet
+local nl = pewpew.new_player_bullet
 function new_player_bullet(x, y, angle)
-  return _new_bullet(x, y, angle, 0)
+  return nl(x, y, angle, 0)
 end
 
-local _rolling_cube_meh = pewpew.rolling_cube_set_enable_collisions_with_walls
+local _1 = pewpew.rolling_cube_set_enable_collisions_with_walls
 function rolling_cube_set_wall_collision(id, v)
-  return _rolling_cube_meh(id, v or true)
+  return _1(id, v or true)
 end
 
-local _ufo_meh = pewpew.ufo_set_enable_collisions_with_walls
+local _2 = pewpew.ufo_set_enable_collisions_with_walls
 function ufo_set_wall_collision(id, v)
-  return _ufo_meh(id, v or true)
+  return _2(id, v or true)
 end
 
-local _entity_wreact = pewpew.entity_react_to_weapon
+local ew = pewpew.entity_react_to_weapon
 function entity_react_to_weapon(id, weapon_type, x, y)
-  return _entity_wreact(id, {type = weapon_type, x = x, y = y, player_index = 0})
+  return ew(id, {type = weapon_type, x = x, y = y, player_index = 0})
 end
 
-pewpew = nil
+function entity_change_pos(id, dx, dy)
+  local x, y = entity_get_pos(id)
+  entity_set_pos(id, x + dx, y + dy)
+end
