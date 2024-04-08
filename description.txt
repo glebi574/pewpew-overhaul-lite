@@ -37,13 +37,11 @@ emoji_error, emoji_warning, emoji_nice - set of emojis(strings), that can be use
 
 debug_print_contents(arr) - prints every key-value pair, contained in table and amount of them. Sorts output by first letter.
 
-
-### tests ###
-
-
-test_print() - automatically tests all possible inputs of print().
+get_memory_usage() - returns memory usage in KB and B
 
 add_memory_print() - adds update callback which forces garbage collection cycle and prints amount of used memory every tick.
+
+add_memory_warning() - checks if you're close to memory limit and automatically collects garbage
 
 
 ### fmath changes ###
@@ -194,7 +192,7 @@ pewpew.new_crowder(x, y) -> new_crowder(x, y)
 
 pewpew.new_floating_message(x, y, str, param) -> new_message(x, y, str, scale, duration, is_optional)
 
-pewpew.new_customizable_entity(x, y) -> new_entity(x, y) - now automatically turns on position interpolation
+pewpew.new_customizable_entity(x, y) -> new_entity(x, y, v) - now allows you to set position interpolation on creation(if not specified, true)
 
 pewpew.new_inertiac(x, y, acceleration, angle) -> new_inertiac(x, y, acceleration, angle)
 
@@ -220,9 +218,9 @@ pewpew.ufo_set_enable_collisions_with_walls(id, v) -> ufo_set_wall_collision(id,
 
 pewpew.entity_get_position(id) -> entity_get_pos(id)
 
-pewpew.entity_get_is_alive(id) -> entity_is_alive(id)
+pewpew.entity_get_is_alive(id) -> entity_get_is_alive(id)
 
-pewpew.entity_get_is_started_to_be_destroyed(id) -> entity_is_exploding(id)
+pewpew.entity_get_is_started_to_be_destroyed(id) -> entity_get_is_exploding(id)
 
 pewpew.entity_set_position(id, x, y) -> entity_set_pos(id, x, y)
 
@@ -322,7 +320,7 @@ new_bomb(x, y, type)
 new_bonus(x, y, type, param)
 new_crowder(x, y)
 new_message(x, y, str, scale, duration, is_optional)
-new_entity(x, y)
+new_entity(x, y, v)
 new_inertiac(x, y, acceleration, angle)
 new_mothership(x, y, type, angle)
 new_pointonium(x, y, v)
@@ -335,8 +333,8 @@ new_ufo(x, y, dx)
 rolling_cube_set_wall_collision(id, v)
 ufo_set_wall_collision(id, v)
 entity_get_pos(id)
-entity_is_alive(id)
-entity_is_exploding(id)
+entity_get_is_alive(id)
+entity_get_is_exploding(id)
 entity_set_pos(id, x, y)
 entity_set_radius(id, r)
 entity_set_update_callback(id, f)
