@@ -149,7 +149,11 @@ end
 local ps = pewpew.play_sound
 local psa = pewpew.play_ambient_sound
 function play_sound(path, v1, v2, v3)
-  return v2 and psa(mpath(path), v1, v2, v3 or 0) or ps(mpath(path), v1 or 0)
+  if v2 then
+    ps(mpath(path), v3 or 0, v1, v2)
+  else
+    psa(mpath(path), v1 or 0)
+  end
 end
 
 local ne = pewpew.new_customizable_entity
