@@ -165,7 +165,7 @@ function new_entity(x, y, v)
 end
 
 local sm = pewpew.customizable_entity_set_mesh
-local sa = pewpew.entity_set_flipping_meshes
+local sa = pewpew.customizable_entity_set_flipping_meshes
 function entity_set_mesh(id, path, i1, i2)
   return i2 and sa(id, mpath(path), i1, i2) or sm(id, mpath(path), i1 or 0)
 end
