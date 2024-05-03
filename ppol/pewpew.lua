@@ -259,11 +259,11 @@ function new_bonus_shield(x, y, shield, box_duration, callback)
 end
 
 function new_bonus_weapon(x, y, cannon, frequency, weapon_duration, box_duration, callback)
-  return new_bonus(x, y, bonus_type.shield, {cannon = cannon, frequency = frequency, weapon_duration = weapon_duration, box_duration = box_duration, taken_callback = callback})
+  return new_bonus(x, y, bonus_type.weapon, {cannon = cannon, frequency = frequency, weapon_duration = weapon_duration, box_duration = box_duration, taken_callback = callback})
 end
 
 function new_bonus_speed(x, y, speed_factor, speed_offset, speed_duration, box_duration, callback)
-  return new_bonus(x, y, bonus_type.shield, {speed_factor = speed_factor, speed_offset = speed_offset, speed_duration = speed_duration, box_duration = box_duration, taken_callback = callback})
+  return new_bonus(x, y, bonus_type.speed, {speed_factor = speed_factor, speed_offset = speed_offset, speed_duration = speed_duration, box_duration = box_duration, taken_callback = callback})
 end
 
 local nm = pewpew.new_floating_message
