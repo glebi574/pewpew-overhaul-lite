@@ -123,7 +123,7 @@ entity_set_radius = pewpew.entity_set_radius
 entity_set_update_callback = pewpew.entity_set_update_callback
 entity_set_wall_collision = pewpew.customizable_entity_configure_wall_collision
 entity_set_player_collision = pewpew.customizable_entity_set_player_collision_callback
-entity_set_weapon_collision = customizable_entity_set_weapon_collision_callback
+entity_set_weapon_collision = pewpew.customizable_entity_set_weapon_collision_callback
 
 
 local is = pewpew.increase_score_of_player
