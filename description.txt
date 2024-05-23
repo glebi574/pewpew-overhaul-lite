@@ -89,6 +89,7 @@ fx_sincos(a)
 fx_atan2(y, x)
 to_int(a)
 to_fx(a)
+abs(a)
 
 
 ### pewpew changes ###
@@ -134,7 +135,7 @@ pewpew.get_score_streak_level(i) -> get_score_streak_level()
 
 pewpew.stop_game() -> stop_game()
 
-pewpew.get_player_inputs(i) -> get_inputs()
+pewpew.get_player_inputs(i) - removed. Information is automatically retrieved and stored in inputs table. See below.
 
 pewpew.get_score_of_player(i) -> get_score()
 
@@ -288,6 +289,16 @@ bomb_type
 bonus_type
 weapon_type
 
+inputs - table, which stores player inputs. Stored values are:
+  ma  - movement joystick angle
+  md  - movement joystick distance
+  sa  - shooting joystick angle
+  sd  - shooting joystick distance
+  mdx - movement joystick x offset
+  mdy - movement joystick y offset
+  sdx - shooting joystick x offset
+  sdy - shooting joystick y offset
+
 set_level_size(x, y)
 add_wall(x1, y1, x2, y2)
 remove_wall(id)
@@ -296,7 +307,6 @@ increase_score(v)
 increase_score_streak(v)
 get_score_streak_level()
 stop_game()
-get_inputs()
 get_score()
 configure_player(param)
 configure_hud_string(str)

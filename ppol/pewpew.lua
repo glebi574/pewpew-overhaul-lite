@@ -94,7 +94,6 @@ entity_set_mesh_angle = pewpew.customizable_entity_set_mesh_angle
 entity_set_music_sync = pewpew.customizable_entity_configure_music_response
 entity_add_mesh_angle = pewpew.customizable_entity_add_rotation_to_mesh
 entity_set_render_radius = pewpew.customizable_entity_set_visibility_radius
-entity_start_spawning = pewpew.customizable_entity_start_spawning
 entity_start_exploding = pewpew.customizable_entity_start_exploding
 
 add_wall = pewpew.add_wall
@@ -134,11 +133,6 @@ end
 local gs = pewpew.get_score_of_player
 function get_score()
   return gs(0)
-end
-
-local gi = pewpew.get_player_inputs
-function get_inputs()
-  return gi(0)
 end
 
 local ch = pewpew.configure_player_hud
@@ -300,3 +294,19 @@ function entity_change_pos(id, dx, dy)
   local x, y = entity_get_pos(id)
   entity_set_pos(id, x + dx, y + dy)
 end
+
+local sp = pewpew.customizable_entity_start_spawning
+function entity_start_spawning(id, t)
+  return sp(id, t or 0)
+end
+
+
+local gi = pewpew.get_player_inputs
+inputs = {}
+add_update_callback(function()
+  inputs.ma, inputs.md, inputs.sa, inputs.sd = gi(0)
+  inputs.mdy, inputs.mdx = fx_sincos(inputs.ma)
+  inputs.mdy, inputs.mdx = inputs.mdy * inputs.md, inputs.mdx * inputs.md
+  inputs.sdy, inputs.sdx = fx_sincos(inputs.sa)
+  inputs.sdy, inputs.sdx = inputs.sdy * inputs.sd, inputs.sdx * inputs.sd
+end)
