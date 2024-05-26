@@ -2,9 +2,8 @@ emoji_error    = '\u{1f6d1}'
 emoji_warning  = '\u{26a0}'
 emoji_nice     = '\u{2705}'
 
-local sf = string.format
 function mpath(path)
-  return sf('%s%s%s', '/dynamic/', path ,'.lua')
+  return string.format('%s%s%s', '/dynamic/', path ,'.lua')
 end
 
 local _r = require
@@ -14,7 +13,7 @@ end
 
 function ppo_require(...)
   for _, path in ipairs{...} do
-    require(sf('%s%s', 'ppol/', path))
+    require(string.format('%s%s', 'ppol/', path))
   end
 end
 
@@ -41,9 +40,13 @@ if not PPO_NDEBUG then
   ppo_require('debug')
 end
 
-ppo_require('base', 'fmath', 'pewpew')
+if math then
+  add_memory_print, add_memory_warning = nil, nil
+  ppo_require('base', 'fmath', 'mesh')
+else
+  ppo_require('base', 'fmath', 'pewpew')
+end
 
 rmn('pewpew', 'fmath', 'fmath_old', 'pewpewinternal')
 
-rm = nil
-rmn = nil
+rm, rmn = nil, nil
