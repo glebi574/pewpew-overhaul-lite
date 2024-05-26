@@ -29,6 +29,12 @@ mpath(path) - wraps path as '/dynamic/' .. path .. '.lua'
 
 ppo_require(...) - requires all inputed paths. Automatically wraps them as 'ppol/' .. mpath(path). Usually you won't need to call this function, it is used by ppol to require its files.
 
+make_color(r, g, b, a) - returns color. Inputs are rgba components of a color.
+
+change_alpha(c, a) - returns color with alpha value changed to a new one. Inputs are color to be modified and new alpha value.
+
+color_to_string(c) - returns string, representing color value, that can be used to color text in game. Input is color that needs to be converted.
+
 emoji_error, emoji_warning, emoji_nice - set of emojis(strings), that can be used in console
 
 
@@ -86,6 +92,8 @@ random(a, b)
 fx_sqrt(a)
 fx_abs(a)
 fx_sincos(a)
+fx_sin(a)
+fx_cos(a)
 fx_atan2(y, x)
 to_int(a)
 to_fx(a)
@@ -111,6 +119,8 @@ pewpew.BombType -> bomb_type - all names are now lower case.
 pewpew.BonusType -> bonus_type - all names are now lower case.
 
 pewpew.WeaponType -> weapon_type - all names are now lower case.
+
+pewpew.AsteroidSize -> asteroid_size - all names are now lower case.
 
 
 pewpew.print(str) - removed. Use print(...) instead, now it can print fx numbers.
@@ -288,6 +298,7 @@ cannon_frequency
 bomb_type
 bonus_type
 weapon_type
+asteroid_size
 
 inputs - table, which stores player inputs. Stored values are:
   ma  - movement joystick angle
@@ -390,3 +401,141 @@ new_bonus_weapon(x, y, cannon, frequency, weapon_duration, box_duration, callbac
 new_bonus_speed(x, y, speed_factor, speed_offset, speed_duration, box_duration, callback) - creates new bonus with speed type and respective arguments.
 
 entity_change_pos(id, dx, dy) - changes position of entity, defined by id by dx and dy
+
+
+### mesh environment ###
+
+
+If you require ppol from mesh environment, pewpew replacements and other pewpew related features, added by ppol won't be loaded. Other features, specifically for meshes will be added instead.
+
+math is removed - all its contents are moved to global environment with some changes:
+pi -> PI
+huge -> INT_HUGE
+mininteger -> INT_MIN
+maxinteger -> INT_MAX
+
+TAU
+round(a)
+
+
+In mesh environment ppol defines functions to optimize mesh creation. Also, meshes, defined by certain functions get access to built-in OOP methods.
+
+def_mesh(...) - returns table with mesh. Such mesh has access to OOP methods. Inputs are:
+  def_mesh() - creates empty mesh.
+  def_mesh(v, s, c) - any combination of vertex, segment or color tables. nil values or lack of argument will be repaced by empty table.
+
+def_meshes(n) - defines meshes table, using def_mesh(). Inputs are:
+  def_meshes() - defines empty meshes table.
+  def_meshes(n) - defines meshes table and inserts n meshes, defined by def_mesh().
+
+get_vsc(v) - retrieves vertex, segment, color tables from mesh. Inputs are:
+  get_vsc() - returns 3 empty tables.
+  get_vsc(i) - returns components of mesh, stored in meshes table at index i
+  get_vsc(mesh) - returns components of provided mesh
+
+rotate_vector(x, y, z, rx, ry, rz) - rotates vector, specified by xyz coordinates by angles around corresponding axis: rx, ry, rz and returns coordinates of rotated vector.
+
+rotate_mesh(mesh, rx, ry, rz) - uses previous function to rotate all vertexes in the mesh by corresponding angles.
+
+add_colors(mesh, color, n) - inserts color, depending on contents of c n times. Function is mostly used by other ppol mesh functions, but can be used in other purposes. Inputs are:
+  add_colors(mesh, color, n) - color is value, it will be inserted in mesh's color table n times.
+  add_colors(mesh, color, n) - color is table, corresponding values from this table will be inserted in mesh's color table. n represents amount of such additions, which means n first colors from color table will be added.
+  add_colors(mesh, color, n) - color is function, it will be called for values from 1 to n and its output will be added to mesh's color table.
+
+add_lines(mesh, color, ...) - adds lines in mesh. color input is similar to add_colors(). Line will be added into mesh for every to values in ... Every value is a table, containing coordinates of 1 end of a line and every 2 such points will create new line.
+
+add_polygon(mesh, color, ...) - adds closed polygon to mesh. Similar to previous function, but now every point is part of polygon and connected to the point which goes after or before it.
+
+add_curve(mesh, color, ...) - adds set of consecutive lines to mesh. Similar to previous function, but first and last points aren't connected.
+
+add_circle(mesh, color, offset, r, precision, rx, ry, rz) - adds circle, rotated by certain angle and moved by certain offset. color input is similar to add_colors(). r is radius and precision is amount of points in circle. offset is table that contains xyz offset of circle after it was rotated; if offset is nil, it won't be applied; otherwise it should be a table, containing xyz coordinates, representing offset; any coordinates that aren't presented will still be set to 0. rx, ry, rz represent rotation by corresponding axis; if corresponding value isn't presented, it will be set to 0.
+
+copy_vertexes(v, mod) - copies vertex table and returns the copy. Inputs are:
+  copy_vertexes(v) - copies vertex table and returns the copy.
+  copy_vertexes(v, mod) - copies vertex table and returns the copy. mod should be a function, used to modify vertex coordinates and return them. Inputs to this function are current index of vertex in vertex table and vertex itself.
+
+copy_segments(s) - copies segment table and returns the copy.
+
+copy_colors(c) - copies color table and returns the copy.
+
+insert_vertexes(from_v, to_v, mod) - inserts contents of vertex table in specified vertex table. mod input is similar to copy_vertexes().
+
+insert_segments(from_s, to_s, index_offset) - inserts contents of segment table in specified segment table. For each value index_offset will be applied; if it isn't specified, it will be set to 0.
+
+insert_colors(from_c, to_c) - inserts contents of color table in specified color table.
+
+copy_mesh(mesh, modv) - copies provided mesh and returns the copy. New mesh has access to OOP methods. modv input is similar to copy_vertexes().
+
+insert_mesh(from_mesh, to_mesh, modv) - inserts mesh in specified mesh. index offset is automatically applied. modv input is similar to copy_vertexes().
+
+
+OOP methods of created meshes are based on functions, mentioned earlier:
+mesh:get_vsc()
+mesh:rotate(rx, ry, rz)
+mesh:add_colors(c, n)
+mesh:add_lines(c, ...)
+mesh:add_polygon(c, ...)
+mesh:add_curve(c, ...)
+mesh:add_circle(c, offset, r, precision, rx, ry, rz)
+mesh:copy_vertexes(mod) - copies respective table from this mesh
+mesh:copy_segments()
+mesh:copy_colors()
+mesh:insert_vertexes(from_v, mod) - insert into respective table in this mesh
+mesh:insert_segments(from_s, index_offset)
+mesh:insert_colors(from_c)
+mesh:copy(modv)
+mesh:insert(from_mesh, modv)
+
+
+all variables and functions:
+
+
+PI
+TAU
+INT_HUGE
+INT_MIN
+INT_MAX
+
+abs
+acos
+asin
+atan
+ceil
+cos
+deg
+exp
+tointeger
+floor
+fmod
+ult
+log
+max
+min
+modf
+rad
+random
+round
+sin
+sincos
+sqrt
+tan
+type
+
+def_mesh(...)
+def_meshes(n)
+get_vsc(v)
+rotate_vector(x, y, z, rx, ry, rz)
+rotate_mesh(mesh, rx, ry, rz)
+add_colors(mesh, color, n)
+add_lines(mesh, color, ...)
+add_polygon(mesh, color, ...)
+add_curve(mesh, color, ...)
+add_circle(mesh, color, offset, r, precision, rx, ry, rz)
+copy_vertexes(v, mod)
+copy_segments(s)
+copy_colors(c)
+insert_vertexes(from_v, to_v, mod)
+insert_segments(from_s, to_s, index_offset)
+insert_colors(from_c, to_c)
+copy_mesh(mesh, modv)
+insert_mesh(from_mesh, to_mesh, modv)

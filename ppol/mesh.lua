@@ -17,7 +17,7 @@ rmn'math'
 
 function def_mesh(v, s, c)
   local mesh = {vertexes = v or {}, segments = s or {}, colors = c or {}}
-  setmetatable(mesh_proto_mt)
+  setmetatable(mesh, mesh_proto_mt)
   return mesh
 end
 
@@ -37,28 +37,6 @@ function get_vsc(v)
     return v.vertexes, v.segments, v.colors
   else
     return {}, {}, {}
-  end
-end
-
-function make_color(r, g, b, a)
-	return ((r * 256 + g) * 256 + b) * 256 + a
-end
-
-function change_alpha(c, a)
-  return c - c % 256 + a
-end
-
-function color_to_string(c)
-  local str0 = {}
-  local cstr = string.format('%x', c)
-  local l = cstr:len()
-  if l == 8 then
-    return string.format('#%s', cstr)
-  else
-    for i = l + 1, 8 do
-      table.insert(str0, '0')
-    end
-    return string.format('#%s%s', table.concat(str0), cstr)
   end
 end
 
@@ -86,12 +64,6 @@ end
 function rotate_mesh(mesh, rx, ry, rz)
   for i, vertex in ipairs(mesh.vertexes) do
     mesh.vertexes[i] = {rotate_vector(vertex[1], vertex[2], vertex[3] or 0, rx, ry, rz)}
-  end
-end
-
-function insert_color(c, color, n)
-  for i = 1, n do
-    table.insert(c, color)
   end
 end
 
@@ -149,7 +121,7 @@ function add_circle(mesh, c, offset, r, precision, rx, ry, rz)
   rx, ry, rz = rx or 0, ry or 0, rz or 0
   local x, y, z
   if offset then
-    x, y, z = offset[1], offset[2], offset[3] or 0
+    x, y, z = offset[1] or 0, offset[2] or 0, offset[3] or 0
   else
     x, y, z = 0, 0, 0
   end
@@ -250,10 +222,6 @@ end
 
 function mesh_proto:rotate(rx, ry, rz)
   return rotate_mesh(self, rx, ry, rz)
-end
-
-function mesh_proto:insert_color(c, color, n)
-  return insert_color(self.colors, color, n)
 end
 
 function mesh_proto:add_colors(c, n)

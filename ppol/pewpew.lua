@@ -71,6 +71,12 @@ weapon_type = {
   repulsive_explosion = _wt.REPULSIVE_EXPLOSION,
   atomize_explosion = _wt.ATOMIZE_EXPLOSION,
 }
+asteroid_size = {
+  small = 0,
+  medium = 1,
+  large = 2,
+  very_large = 3
+}
 
 _et = nil
 _ct = nil
