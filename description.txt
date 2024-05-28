@@ -1,7 +1,7 @@
 
-PPOL(ppol) - pewpew-overhail-lite ; v0.1
+PPOL(ppol) - pewpew-overhail-lite ; v0.9
 
-This is ppol, lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. Currently ppol is only compatible with singleplayer(as there are no way to create custom multiplayer levels).
+This is ppol, lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. ppol also adds new functions to simplify mesh development. Currently ppol is only compatible with singleplayer(as there are no way to create custom multiplayer levels).
 
 To include ppol in your level, copy ppol folder in your level folder. In the beginning of the file, that is the entry point of your level, defined in manifest.json (usually level.lua), require ppol entry point:
 
@@ -22,10 +22,10 @@ require'functions' -- similar to require'/dynamic/functions.lua'
 print - now can also print fx values
 
 
-### ppol functions ###
+### ppol ###
 
 
-mpath(path) - wraps path as '/dynamic/' .. path .. '.lua'
+mpath(path) - wraps path as '/dynamic/' .. path .. '.lua'. All related functions now use this wrapper.
 
 ppo_require(...) - requires all inputed paths. Automatically wraps them as 'ppol/' .. mpath(path). Usually you won't need to call this function, it is used by ppol to require its files.
 
@@ -36,6 +36,8 @@ change_alpha(c, a) - returns color with alpha value changed to a new one. Inputs
 color_to_string(c) - returns string, representing color value, that can be used to color text in game. Input is color that needs to be converted.
 
 emoji_error, emoji_warning, emoji_nice - set of emojis(strings), that can be used in console
+
+PPOL_VERSION - current version of ppol
 
 
 ### debugging tools ###
