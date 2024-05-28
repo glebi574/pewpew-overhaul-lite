@@ -193,11 +193,11 @@ function set_joystick_color(c1, c2)
 end
 
 function set_camera_pos(x, y, z)
-  return _c(0, {camera_x_override = x, camera_y_override = y, camera_distance = z and z - 1000fx or 0fx})
+  return _c(0, {camera_x_override = x, camera_y_override = y, camera_distance = z and z + 1000fx or 0fx})
 end
 
 function set_camera_z(z)
-  return _c(0, {camera_distance = z - 1000fx})
+  return _c(0, {camera_distance = z + 1000fx})
 end
 
 function set_camera_angle(x)
