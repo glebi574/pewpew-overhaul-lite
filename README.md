@@ -9,4 +9,6 @@ I assume, that you'll copy `ppol` folder directly in your level folder, but if y
 
 ppol includes some functions for debugging and testing. To not load them, create global variable `PPO_NDEBUG` before requiring ppol and set it to value other than nil.
 
-[description.txt](https://github.com/glebi574/pewpew-overhaul-lite/blob/main/description.txt) contains all changes and additions.
+[description.txt](https://github.com/glebi574/pewpew-overhaul-lite/blob/main/description.txt) contains all changes and additions.  
+
+If you have any questions or suggestions, join our [Discord server](https://discord.gg/JwFyBgX8cV).
