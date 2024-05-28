@@ -1,4 +1,5 @@
-# pewpew-overhaul-lite
+![ppo_logo_wide](https://github.com/glebi574/pewpew-overhaul-lite/assets/38727318/bb436a4d-0201-4f9f-bc2d-c51a8e06ee45)  
+# pewpew-overhaul-lite <a href="https://discord.gg/JwFyBgX8cV"><img src="https://img.shields.io/discord/1244949330029318174?style=for-the-badge&logo=discord&label=Discord&color=4f58d6" align="right"></a>  
 PPOL(ppol) is lite variant of `ppo`. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. `ppol` also adds new functions to simplify mesh development. Currently `ppol` is only compatible with singleplayer(as there are no way to create custom multiplayer levels).  
 
 To include ppol in your level, copy `ppol` folder in your level folder. In the beginning of the file, that is the entry point of your level, defined in manifest.json (usually level.lua), require `ppol` entry point:
