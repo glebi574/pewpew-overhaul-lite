@@ -1,6 +1,11 @@
+local _t = type
 for key, value in pairs(math) do
   _ENV[key] = value
 end
+mtype = type
+type = _t
+_t = nil
+
 PI = pi
 TAU = pi * 2
 INT_HUGE = huge
@@ -14,6 +19,9 @@ end
 pi, huge, maxinteger, mininteger = nil, nil, nil, nil
 rmn'math'
 
+
+local mesh_proto = {}
+local mesh_proto_mt = {__index = mesh_proto}
 
 function def_mesh(v, s, c)
   local mesh = {vertexes = v or {}, segments = s or {}, colors = c or {}}
@@ -104,7 +112,6 @@ function add_polygon(mesh, c, ...)
   end
   table.insert(s, index)
   table.insert(mesh.segments, s)
-  
   for _, vertex in ipairs(args) do
     table.insert(mesh.vertexes, vertex)
   end
@@ -212,9 +219,6 @@ function insert_mesh(fmesh, tmesh, modv)
   insert_colors(fc, tc)
 end
 
-
-local mesh_proto = {}
-local mesh_proto_mt = {__index = mesh_proto}
 
 function mesh_proto:get_vsc()
   return get_vsc(self)

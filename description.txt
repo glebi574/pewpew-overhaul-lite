@@ -409,6 +409,7 @@ entity_change_pos(id, dx, dy) - changes position of entity, defined by id by dx 
 If you require ppol from mesh environment, pewpew replacements and other pewpew related features, added by ppol won't be loaded. Other features, specifically for meshes will be added instead.
 
 math is removed - all its contents are moved to global environment with some changes:
+type -> mtype
 pi -> PI
 huge -> INT_HUGE
 mininteger -> INT_MIN
@@ -519,7 +520,7 @@ sin
 sincos
 sqrt
 tan
-type
+mtype
 
 def_mesh(...)
 def_meshes(n)
