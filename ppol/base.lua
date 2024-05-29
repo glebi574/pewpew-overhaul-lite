@@ -1,4 +1,4 @@
-local _p = print
+local __print = print
 function print(...) -- adds ability to use fx numbers with print and fixes their output
   local arg_amount = select('#', ...)
   local output = {select(1, ...)}
@@ -13,7 +13,7 @@ function print(...) -- adds ability to use fx numbers with print and fixes their
       output[i] = 'nil'
     end
   end
-  _p(table.unpack(output))
+  __print(table.unpack(output))
 end
 
 function make_color(r, g, b, a)

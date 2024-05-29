@@ -8,9 +8,9 @@ function mpath(path)
   return string.format('%s%s%s', '/dynamic/', path ,'.lua')
 end
 
-local _r = require
+local __require = require
 function require(path)
-  return _r(mpath(path))
+  return __require(mpath(path))
 end
 
 function ppo_require(...)
