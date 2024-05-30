@@ -285,7 +285,7 @@ pewpew.customizable_entity_set_player_collision_callback(id, f) -> entity_set_pl
 
 pewpew.customizable_entity_set_weapon_collision_callback(id, f) -> entity_set_weapon_collision(id, f)
 
-pewpew.customizable_entity_start_spawning(id, duration) -> entity_start_spawning(id, duration)
+pewpew.customizable_entity_start_spawning(id, duration) -> entity_start_spawning(id, duration) - if duration isn't specified, it is set to 0
 
 pewpew.customizable_entity_start_exploding(id, duration) -> entity_start_exploding(id, duration)
 
