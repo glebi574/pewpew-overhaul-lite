@@ -8,8 +8,10 @@ require'/dynamic/ppol/.lua'
 ```
 I assume, that you'll copy `ppol` folder directly in your level folder, but if you need to place it somewhere else, just modify `ppo_require` function in ppol\.lua so it returns the correct path of `ppol` files.
 
-ppol includes some functions for debugging and testing. To not load them, create global variable `PPO_NDEBUG` before requiring ppol and set it to value other than nil.
+`ppol` includes some functions for debugging and testing. To not load them, create global variable `PPO_NDEBUG` before requiring ppol and set it to value other than nil.
 
-[description.txt](https://github.com/glebi574/pewpew-overhaul-lite/blob/main/description.txt) contains all changes and additions.  
+Read documentation at [ppol Docs](https://pewpew-overhaul.gitbook.io/pewpew-overhaul-lite), created by [artiekra](https://github.com/artiekra).  
+
+[description.txt](https://github.com/glebi574/pewpew-overhaul-lite/blob/main/description.txt) usually is most up-to-date and contains all changes and additions.  
 
 If you have any questions or suggestions, join our [Discord server](https://discord.gg/JwFyBgX8cV).
