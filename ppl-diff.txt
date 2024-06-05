@@ -1,0 +1,273 @@
+
+PPOL(ppol) - pewpew-overhail-lite ; v0.10
+
+This file contains all changes between ppol and ppl API.
+
+Certain changes in arguments of functions aren't mentioned there. See documentation for full information.
+
+
+### Lua ###
+
+
+require - now automatically wraps path, considering pewpew's need to use /dynamic/ and restriction to use only .lua file.
+
+tostring - now can print fx values and fixes them being formatted incorrectly.
+
+print(...) - now can print anything.
+
+
+New features are added, check documentation for more information.
+
+
+
+### fmath ###
+
+
+fmath is removed
+
+fmath.max_fixedpoint() -> FX_MAX
+
+fmath.random_fixedpoint(a, b) -> fx_random(a, b)
+
+fmath.random_int(a, b) -> random(a, b)
+
+fmath.sqrt(a) -> fx_sqrt(a)
+
+fmath.from_fraction(a, b) - removed
+
+fmath.to_int(a) -> to_int(a)
+
+fmath.abs_fixedpoint(a) -> fx_abs(a)
+
+fmath.to_fixedpoint(a) -> to_fx(a)
+
+fmath.sincos(a) -> fx_sincos(a)
+
+fmath.atan2(y, x) -> fx_atan2(y, x)
+
+fmath.tau() -> FX_TAU
+
+
+New features are added, check documentation for more information.
+
+
+
+### pewpew ###
+
+
+pewpew is removed
+
+
+pewpew.EntityType -> entity_type - all names are now lower case, so pewpew.EntityType.ASTEROID now can be accessed as entity_type.asteroid . Only name of CUSTOMIZABLE_ENTITY was changed: entity_type.custom .
+
+pewpew.MothershipType -> mothership_type - doesn't use keys anymore, only indexes: pewpew.MothershipType.THREE_CORNERS now can be accessed as mothership_type[3] .
+
+pewpew.CannonType -> cannon_type - all names are now lower case.
+
+pewpew.CannonFrequency -> cannon_frequency - no 'FREQ' part, so pewpew.CannonFrequency.FREQ_30 now can be accessed as cannon_frequency._30 .
+
+pewpew.BombType -> bomb_type - all names are now lower case.
+
+pewpew.BonusType - removed globally. There are no need for it now, as new function, provided by ppol can choose bonus type automatically.
+
+pewpew.WeaponType -> weapon_type - all names are now lower case.
+
+pewpew.AsteroidSize -> asteroid_size - all names are now lower case.
+
+
+pewpew.print(str) - removed. Use print(...) instead.
+
+pewpew.print_debug_info() - removed. Same can be achieved by collectgarbage'count'.
+
+pewpew.set_level_size(x, y) -> set_level_size(x, y)
+
+pewpew.add_wall(x1, y1, x2, y2) -> add_wall(x1, y1, x2, y2)
+
+pewpew.remove_wall(id) -> remove_wall(id)
+
+pewpew.add_update_callback(f) -> add_update_callback(f)
+
+pewpew.get_number_of_players() - removed.
+
+pewpew.increase_score_of_player(i, v) -> increase_score(v)
+
+pewpew.increase_score_streak_of_player(i, v) -> increase_score_streak(v)
+
+pewpew.get_score_streak_level(i) -> get_score_streak_level()
+
+pewpew.stop_game() -> stop_game()
+
+pewpew.get_player_inputs(i) - removed. Information is automatically retrieved and stored in inputs table.
+
+pewpew.get_score_of_player(i) -> get_score()
+
+pewpew.configure_player(i, param) - removed. Replaced by set_has_lost(), set_shield(), set_joystick_colors() and camera framework.
+
+pewpew.configure_player_hud(i, param) -> configure_hud_string(str)
+
+pewpew.get_player_configuration(i) - removed. Replaced by get_has_lost() and get_shield().
+
+pewpew.configure_player_ship_weapon(id, param) -> set_player_ship_weapon(id, frequency, cannon, duration)
+
+pewpew.add_damage_to_player_ship(id, v) -> damage_player_ship(id, v)
+
+pewpew.add_arrow_to_player_ship(ship_id, target_id, color) -> add_arrow(ship_id, target_id, color)
+
+pewpew.remove_arrow_from_player_ship(ship_id, arrow_id) -> remove_arrow(ship_id, arrow_id)
+
+pewpew.make_player_ship_transparent(id, duration) -> make_player_ship_transparent(id, duration)
+
+pewpew.set_player_ship_speed(id, factor, offset, duration) -> set_player_ship_speed(id, factor, offset, duration)
+
+pewpew.get_all_entities() -> get_all_entities()
+
+pewpew.get_entities_colliding_with_disk(x, y, r) -> get_entities_in(x, y, r)
+
+pewpew.get_entity_count(type) -> get_entity_count(type)
+
+pewpew.get_entity_type(id) -> get_entity_type(id)
+
+pewpew.play_ambient_sound(path, i) - removed. It was united with pewpew.play_sound().
+
+pewpew.play_sound(path, i, x, y) -> play_sound(path, ...) - united with pewpew.play_ambient_sound(). See documentation for more information.
+
+pewpew.create_explosion(x, y, color, scale, particle_count) -> create_explosion(x, y, color, scale, particle_count)
+
+pewpew.new_asteroid_with_size(x, y, size) - removed. It was united with pewpew.new_asteroid().
+
+pewpew.new_asteroid(x, y) -> new_asteroid(x, y, size) - united with pewpew.new_asteroid_with_size(). See documentation for more information.
+
+pewpew.new_baf(x, y, angle, speed, lifetime) -> new_baf(x, y, angle, speed, lifetime)
+
+pewpew.new_baf_red(x, y, angle, speed, lifetime) -> new_baf_red(x, y, angle, speed, lifetime)
+
+pewpew.new_baf_blue(x, y, angle, speed, lifetime) -> new_baf_blue(x, y, angle, speed, lifetime)
+
+pewpew.new_bomb(x, y, type) -> new_bomb(x, y, type)
+
+pewpew.new_bonus(x, y, type, param) - removed. It was replaced with new_bonus_shield(), new_bonus_weapon(), new_bonus_speed(). See documentation for more information.
+
+pewpew.new_crowder(x, y) -> new_crowder(x, y)
+
+pewpew.new_floating_message(x, y, str, param) -> new_floating_message(x, y, str, scale, duration, is_optional)
+
+pewpew.new_customizable_entity(x, y) -> new_entity(x, y, v)
+
+pewpew.new_inertiac(x, y, acceleration, angle) -> new_inertiac(x, y, acceleration, angle)
+
+pewpew.new_mothership(x, y, type, angle) -> new_mothership(x, y, type, angle)
+
+pewpew.new_pointonium(x, y, v) -> new_pointonium(x, y, v)
+
+pewpew.new_player_ship(x, y, i) -> new_player_ship(x, y)
+
+pewpew.new_player_bullet(x, y, angle, i) -> new_player_bullet(x, y, angle)
+
+pewpew.new_rolling_cube(x, y) -> new_rolling_cube(x, y, v)
+
+pewpew.new_rolling_sphere(x, y, angle, speed) -> new_rolling_sphere(x, y, angle, speed)
+
+pewpew.new_wary(x, y) -> new_wary(x, y)
+
+pewpew.new_ufo(x, y, dx) -> new_ufo(x, y, dx, v)
+
+pewpew.rolling_cube_set_enable_collisions_with_walls(id, v) - removed. It was united with pewpew.new_rolling_cube().
+
+pewpew.ufo_set_enable_collisions_with_walls(id, v) -> ufo_set_wall_collision(id, v) - removed. It was united with pewpew.new_ufo().
+
+pewpew.entity_get_position(id) -> entity_get_pos(id)
+
+pewpew.entity_get_is_alive(id) -> entity_get_is_alive(id)
+
+pewpew.entity_get_is_started_to_be_destroyed(id) -> entity_get_is_exploding(id)
+
+pewpew.entity_set_position(id, x, y) -> entity_set_pos(id, x, y)
+
+pewpew.entity_set_radius(id, r) -> entity_set_radius(id, r)
+
+pewpew.entity_set_update_callback(id, f) -> entity_set_update_callback(id, f)
+
+pewpew.entity_destroy(id) -> entity_destroy(id)
+
+pewpew.entity_react_to_weapon(id, param) -> entity_react_to_weapon(id, weapon_type, x, y)
+
+pewpew.customizable_entity_set_position_interpolation(id, v) - removed. It was united with pewpew.new_customizable_entity().
+
+pewpew.customizable_entity_set_flipping_meshes(id, path, i1, i2) - removed. It was united with pewpew.customizable_entity_set_mesh().
+
+pewpew.customizable_entity_set_mesh(id, path, i) -> entity_set_mesh(id, path, ...) - united with pewpew.customizable_entity_set_flipping_meshes(). See documentation for more information.
+
+pewpew.customizable_entity_set_mesh_color(id, color) -> entity_set_mesh_color(id, color)
+
+pewpew.customizable_entity_set_string(id, str) -> entity_set_string(id, str)
+
+pewpew.customizable_entity_set_mesh_xyz(id, x, y, z) -> entity_set_mesh_xyz(id, x, y, z)
+
+pewpew.customizable_entity_set_mesh_z(id, z) -> entity_set_mesh_z(id, z)
+
+pewpew.customizable_entity_set_mesh_xyz_scale(id, x, y, z) - removed. It was united with pewpew.customizable_entity_set_mesh_scale().
+
+pewpew.customizable_entity_set_mesh_scale(id, scale) -> entity_set_mesh_scale(id, ...) - united with pewpew.customizable_entity_set_mesh_xyz_scale(). See documentation for more information.
+
+pewpew.customizable_entity_set_mesh_angle(id, angle, x, y, z) -> entity_set_mesh_angle(id, angle, x, y, z)
+
+pewpew.customizable_entity_skip_mesh_attributes_interpolation(id) - removed. Doesn't seem to work.
+
+pewpew.customizable_entity_configure_music_response(id, param) -> entity_set_music_sync(id, param)
+
+pewpew.customizable_entity_add_rotation_to_mesh(id, angle, x, y, z) -> entity_add_mesh_angle(id, angle, x, y, z)
+
+pewpew.customizable_entity_set_visibility_radius(id, r) -> entity_set_render_radius(id, r)
+
+pewpew.customizable_entity_configure_wall_collision(id, c, f) -> entity_set_wall_collision(id, c, f)
+
+pewpew.customizable_entity_set_player_collision_callback(id, f) -> entity_set_player_collision(id, f)
+
+pewpew.customizable_entity_set_weapon_collision_callback(id, f) -> entity_set_weapon_collision(id, f)
+
+pewpew.customizable_entity_start_spawning(id, duration) -> entity_start_spawning(id, duration)
+
+pewpew.customizable_entity_start_exploding(id, duration) -> entity_start_exploding(id, duration)
+
+
+New features are added, check documentation for more information.
+
+
+
+### Meshes ###
+
+
+math is removed
+
+
+math.pi -> PI
+math.huge -> INT_HUGE
+math.maxinteger -> INT_MAX
+math.mininteger -> INT_MIN
+
+math.abs -> abs
+math.acos -> acos
+math.asin -> asin
+math.atan -> atan
+math.ceil -> ceil
+math.cos -> cos
+math.deg -> deg
+math.exp -> exp
+math.tointeger -> tointeger
+math.floor -> floor
+math.fmod -> fmod
+math.ult -> ult
+math.log -> log
+math.max -> max
+math.min -> min
+math.modf -> modf
+math.rad -> rad
+math.random -> random
+math.sin -> sin
+math.sincos -> sincos
+math.sqrt -> sqrt
+math.tan -> tan
+math.type -> mtype
+
+
+New features are added, check documentation for more information.

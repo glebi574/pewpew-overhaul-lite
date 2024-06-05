@@ -1,0 +1,582 @@
+
+PPOL(ppol) - pewpew-overhail-lite ; v0.10
+
+ppol is a lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. ppol also adds new features to simplify certain development processes, such as mesh halpers and camera framework. Currently ppol is only compatible with singleplayer, as it is imposible to create custom levels for multiplayer anyway.
+
+To include ppol in your level, copy ppol folder in your level folder. In the beginning of the file, that is the entry point of your level, defined in manifest.json (usually level.lua), require ppol entry point:
+
+require'/dynamic/ppol/.lua'
+
+I assume, that you'll copy ppol folder directly in your level folder, but if you need to place it somewhere else, just modify ppo_require function in ppol\.lua so it returns the correct path of ppol files.
+
+ppol includes some functions for debugging and testing. To not load them, create global variable PPO_NDEBUG before requiring ppol and set it to value other than nil or false.
+
+ppol uses custom camera movement, so you will have to set it up first. By default camera is in the free mode, which means it will receive direct input from movement joystick. Camera in ppol has plenty of settings, but in usual case of level with 1 player ship this would be enough to make camera follow your player ship:
+
+camera.set_args(camera_mode.entity, id)
+
+In this case id is an id of entity you want to follow and camera_mode.entity is camera mode, which specifies how camera should work. For more information see documentation below.
+
+This documentation only talks about how ppol works, considering all changes PewPew Live does on its own.
+If you want to see difference between ppl API and ppol, see ppl-diff.txt
+If you want to see original documentation for ppl, all up-to-date links should be in its GitHub page: https://github.com/pewpewlive/ppl-utils
+ppol also has GitBook docs: https://ppo.gitbook.io/pewpew-overhaul-lite
+
+
+
+### Lua ###
+
+PewPew Live uses modified version of Lua 5.3. If you haven't worked with ppl before, you should check its documentation, as it explains these changes well enough.
+
+ppol also modifies some basic features.
+
+
+require(path) - now uses shortened paths, via mpath(). Note, that dofile() wasn't modified - require seems to be same as dofile() in PewPew Live.
+
+tostring(v) - now can print fixedpoint numbers and fixes them being formatted incorrectly.
+
+print(...) - now can print anything.
+
+
+
+### New features ###
+
+This list includes new features, that mostly unrelated to one another and help development process overall.
+
+
+string mpath(path) -  wraps file to standard, acceptable by PewPew Live. Usually you have to write paths as '/dynamic/path.lua' and you are restricted to only use .lua files. Now you only have to provide path to file without its extension. So, 'path' will become '/dynamic/path.lua', which locally is 'path.lua'. This function is used internally in most frequently used functions, that need to work with files. Note, that the first time you load ppol in the environment you'll have to use standard path.
+
+nil ppo_require(...) - requires all inputed paths. Automatically wraps them as 'ppol/' .. mpath(path). Usually you won't need to call this function, it is used by ppol internally to require its files.
+
+int make_color(r, g, b, a) - returns color. Inputs are rgba components of a color.
+
+int change_alpha(c, a) - returns color with alpha value changed to a new one. Inputs are color to be modified and new alpha value.
+
+string color_to_string(c) - returns string, representing color value, that can be used to color text in game. Input is color that needs to be converted.
+
+emoji_error, emoji_warning, emoji_nice - set of emojis(strings), that can be used in console
+
+PPOL_VERSION - current version of ppol
+
+
+
+### Debugging ###
+
+ppol introduces some functions for debugging. To not load them, define PPO_NDEBUG with value other than nil or false.
+
+
+nil debug_print_contents(arr) - prints every key-value pair, contained in table and amount of these pairs. Sorts output by first letter.
+
+string get_memory_usage() - returns memory usage in KB and B
+
+nil add_memory_print() - adds update callback which forces garbage collection cycle and prints amount of used memory every tick.
+
+nil add_memory_warning() - checks if you're close to memory limit and automatically collects garbage
+
+
+
+### Fixedpoint maths ###
+
+ppol reuses fmath library functions to define its own function and value for fixedpoint maths.
+
+
+fx fx_abs(v)
+
+fx fx_atan2(dy, dx)
+
+fx fx_random(...) - with no input returns random fx in range [0fx; 1fx]. With 1 argument returns random fx in range [0fx; a]. With 2 arguments returns random fx in range [a; b].
+
+fx fx_sincos(v)
+
+fx fx_sin(a)
+
+fx fx_cos(a)
+
+fx fx_sqrt(v)
+
+fx to_fx(v)
+
+int to_int(v)
+
+int abs(a)
+
+int random(a, b)
+
+FX_TAU - fx value of tau
+
+FX_PI - fx value of pi
+
+FX_MAX - maximum value of fx
+
+FX_MIN - minimum value of fx(equal to -FX_MAX)
+
+FX_E - fx value of exponent
+
+
+
+### pewpew ###
+
+ppol reuses pewpew library and modifies original functions, to define its own functions to interact with game environment.
+
+
+inputs - table, containing inputs from player joysticks and some of their interpretations.
+  ma  - angle of movement joystick
+  md  - distance of movement joystick
+  sa  - angle of shooting joystick
+  sd  - distance of shooting joystick
+  mdx - x offset of movement joystick
+  mdy - y offset of movement joystick
+  sdx - x offset of shooting joystick
+  sdy - y offset of shooting joystick
+
+
+entity_type - table with entity types, used by ppl
+  asteroid
+  baf
+  inertiac
+  mothership
+  mothership_bullet
+  rolling_cube
+  rolling_sphere
+  uf
+  wary
+  crowder
+  custom
+  ship
+  bomb
+  baf_blue
+  baf_red
+  wary_missile
+  ufo_bullet
+  player_bullet
+  bomb_explosion
+  player_explosion
+  bonus
+  floating_message
+  pointonium
+  bonus_implosion
+
+mothership_type - list of mothership types, used by ppl. Index corresponds to mothership with respective amount of corners and should be in range [3; 7].
+
+cannon_type - table with cannon types, used by ppl
+  single
+  tic_toc
+  double
+  triple
+  four_directions
+  double_swipe
+  hemisphere
+
+cannon_frequency - table with cannon frequencies, used by ppl
+  _30
+  _15
+  _10
+  _7_5
+  _6
+  _5
+  _3
+  _2
+  _1
+
+bomb_type - table with bomb types, used by ppl
+  freeze
+  repulsive
+  atomize
+  small_atomize
+  small_freeze
+
+weapon_type - table with weapon types, used by ppl
+  bullet
+  freeze_explosion
+  repulsive_explosion
+  atomize_explosion
+
+asteroid_size - table with asteroid sizes, used by ppl
+  small
+  medium
+  large
+  very_large
+
+
+nil set_level_size(...) - sets level size, which limits position of entities with turned on wall collision. Sizes should be in range (0fx; 6000fx]. Inputs are:
+  set_level_size(x) - sets level size to x*x.
+  set_level_size(x, y) - sets level size to x*y.
+
+int add_wall(x1, y1, x2, y2) - adds wall, limited by points (x1; y1), (x2; y2). Amount of such walls is limited by 200. Returns id of the wall.
+
+nil remove_wall(wall_id) - removes wall with specified wall id.
+
+nil add_update_callback(f) - adds specified function in a list. These functions will be called every tick in the order they were added.
+
+nil add_post_update_callback(f) - adds specified function in a list. These functions will be called every tick after functions, added by add_update_callback() in reversed order they were added.
+
+nil increase_score(v) - increases score of player by provided value. If all player ships are destroyed, player's configuration has_lost will be set to true, disallowing to change score. Use set_has_lost(false), which can be found below, to modify player's score in that condition.
+
+nil increase_score_streak(v) - increases score streak of player by provided value.
+
+int get_score_streak_level() - returns current score streak level of player.
+
+nil stop_game() - stops game. Replay recording will be stopped in a few seconds after calling this function.
+
+int get_score() - returns current score of player.
+
+nil set_hud_string(str) - sets string in player's hud in the top left corner.
+
+nil set_player_ship_weapon(id, frequency, cannon, duration) - sets weapon of a player ship, specified by id to the one with frequency from cannon_frequency and cannon from cannon_type for given duration. If duration or cannon aren't provided, one of the default weapons will be used instead.
+
+nil damage_player_ship(id, damage) - damages player ship with specified id by given amount. If damage isn't provided, it will be set to 1.
+
+int add_arrow(ship_id, target_id, color) - adds arrow to specified player ship, that point to entity, specified by target_id and colors it. The arrow is automatically removed when the target entity is destroyed. Returns id of an arrow.
+
+nil remove_arrow(ship_id, arrow_id) - removes specified arrow from specified player ship.
+
+nil make_player_ship_transparent(ship_id, duration) - makes player ship transparent for specified amount of ticks.
+
+nil set_player_ship_speed(id, factor, offset, duration) - sets player ship speed to (factor * 10fx) + offset for given duration. If duration isn't provided, player will have such speed indefinitely.
+
+table get_all_entities() - returns table, containing all entities. Entities in such table are stored as a list, sorted by entity ids in ascending order.
+
+table get_entities_in(x, y, radius) - returns table, containing all entities, which are in circle, centered at (x; y) with a given radius.
+
+int get_entity_count(type) - returns amount of alive entities with specified type.
+
+int get_entity_type(id) - returns type of entity with provided id.
+
+nil play_sound(path, ...) - plays sound, located in a file with provided path at a certain index ambiently or at specified point. Inputs are:
+  play_sound(path) plays ambient sound from file, described by path at index 0.
+  play_sound(path, i) plays ambient sound from file, described by path at index i.
+  play_sound(path, x, y) plays sound at (x; y) from file, described by path at index 0.
+  play_sound(path, x, y, i) plays sound at (x; y) from file, described by path at index i.
+
+nil create_explosion(x, y, color, scale, particle_amount) - creates explosion at a given location, with specified amount of particles, having specified color, scaled by given value. Scale should be in range (1fx; 10fx] and particle amount - in range [1; 100].
+
+int new_asteroid(x, y, size) - creates asteroid at a given location with a size from asteroid_size. If size isn't provided, default one will be used instead. Returns id of created asteroid.
+
+int new_baf(x, y, angle, speed, lifetime) - creates new baf at a given location with specified angle and speed for specified lifetime. If lifetime isn't specified, baf will exist indefinitely. Returns id of created baf.
+
+int new_baf_red(x, y, angle, speed, lifetime) - similar to new_baf(), but creates baf_red instead.
+
+int new_baf_blue(x, y, angle, speed, lifetime) - similar to new_baf(), but creates baf_blue instead.
+
+int new_bomb(x, y, type) - creates bomb at a given location with type from bomb_type. Returns id of created bomb.
+
+int new_crowder(x, y) - creates crowder at a given location. Returns id of created crowder.
+
+int new_floating_message(x, y, str, scale, duration, is_optional) - creates floating message at a given location with specified string, scale of text for a given duration. is_optional specifies if message can be hidden, depending on user's UI settings. Returns id of created floating message.
+
+int new_entity(x, y, v) - creates custom entity at a given location and specifies if it has position interpolation inabled. If v isn't specified, position interpolation will be turned on. Returns id of created custom entity.
+
+int new_inertiac(x, y, acceleration, angle) - creates inertiac at a given location with specified speed and angle. Returns id of created inertiac.
+
+int new_mothership(x, y, type, angle) - creates mothership ar a given location with specified type from mothership_type and angle. Returns id of created mothership.
+
+int new_pointonium(x, y, v) - creates pointonium at a given location with score value, which should be 64, 128 or 256. Returns id of created pointonium.
+
+int new_player_ship(x, y) - creates player ship at a given location. Returns id of created player ship.
+
+int new_player_bullet(x, y, angle) - creates player bullet at a given location with specified angle. Returns id of created bullet.
+
+int new_rolling_cube(x, y, wall_collision) - creates rolling cube at a given location with specified wall collision option. If wall_collision isn't provided, wall collision will be turned on. Returns id of created rolling cube.
+
+int new_rolling_sphere(x, y, angle, speed) - creates rolling sphere at a given location with specified angle and speed. Returns id of created rolling sphere.
+
+int new_wary(x, y) - creates wary at a given location. Returns id of created wary.
+
+int new_ufo(x, y, dx, wall_collision) - creates ufo at a given location with specified horizontal speed dx and wall collision option. If wall_collision isn't provided, wall collision will be turned on. Returns id of created ufo.
+
+fx, fx entity_get_pos(id) - returns position of entity with specified id.
+
+bool entity_get_is_alive(id) - returns if entity with specified id is alive or not.
+
+bool entity_get_is_exploding(id) - returns if entity with specified id is exploding or not.
+
+nil entity_set_pos(id, x, y) - sets position of entity with specified id to given point.
+
+nil entity_set_radius(id, r) - sets radius of entity with specified id to given value. It is used to check collisions internally.
+
+nil entity_set_update_callback(id, f) - sets update callback to entity with specified id. To remove it, provide nil instead of function. Such update callback are called as functions, provided with entity id, they're attached to.
+
+nil entity_destroy(id) - destroys entity with specified id.
+
+nil entity_react_to_weapon(id, weapon_type, x, y) - forces entity with specified id to react to specified weapon from weapon_type. (x; y) is a vector, used to calculate collision effects for certain entities, such as inertiacs and should be vector of a weapon, entity reacts to.
+
+nil entity_set_mesh(id, path, ...) - sets mesh of a custom entity with specified id to one, stored in file with specified path at a given index or indexes to make them flip between ticks, which allows creation of 60 fps animations. Inputs are:
+  entity_set_mesh(id, path) - sets mesh of custom entity specified by id to mesh in file, described by path at index 0
+  entity_set_mesh(id, path, i) - sets mesh of custom entity specified by id to mesh in file, described by path at index i
+  entity_set_mesh(id, path, i1, i2) - sets flipping meshes of custom entity specified by id to meshes in file, described by path at indexes i1 and i2
+
+nil entity_set_mesh_color(id, color) - sets mesh color of custom entity with specified id.
+
+nil entity_set_string(id, str) - sets string to custom entity with specified id.
+
+nil entity_set_mesh_xyz(id, x, y, z) - sets mesh offsets of custom entity with specified id.
+
+nil entity_set_mesh_z(id, z) - sets mesh z offset of custom entity with specified id.
+
+nil entity_set_mesh_scale(id, ...) - sets mesh scale of custom entity, specified by id. Inputs are:
+  entity_set_mesh_scale(id, v) - scales mesh by v
+  entity_set_mesh_scale(id, x, y) - scales mesh by (x, y, 1fx)
+  entity_set_mesh_scale(id, x, y, z) - scales mesh by (x, y, z)
+
+nil entity_set_mesh_angle(id, v, x, y, z) - sets mesh angle of custom entity with specified id to values along respective axis, multiplied by v.
+
+nil entity_set_music_sync(id, conf) - sets music synchronization of entity with specified id. conf is table, which can contain options:
+  color_start
+  color_end
+  scale_x_start
+  scale_x_end
+  scale_y_start
+  scale_y_end
+  scale_z_start
+  scale_z_end
+
+nil entity_add_mesh_angle(id, v, x, y, z) - increases mesh angle of custom entity with specified id by values along respective axis, multiplied by v.
+
+nil entity_set_render_radius(id, r) - sets render radius of custom entity with specified id. If entity is out of user's screen borders for a value, bigger than such radius, it won't be rendered.
+
+nil entity_set_wall_collision(id, wall_collision, callback) - sets wall collision and respective callback of custom entity with specified id. If callback is provided, it will be called on wall collision with arguments being: entity_id, wall_normal_x, wall_normal_y.
+
+nil entity_set_player_collision(id, callback) - sets player collision callback of custom entity with specified id. This callback will be called on collision with player ship with arguments being: entity_id, 0, ship_id.
+
+nil entity_set_weapon_collision(id, callback) - sets weapon collision callback of custom entity with specified id. This callback will be called on collision with player's bullet with arguments being: entity_id, 0, weapon_type.
+
+nil entity_start_spawning(id, duration) - starts spawn animation of custom entity with specified id for given duration. If duration isn't provided, it will be set to 0. Every entity has 30-tick long spawn animation, when it's created; this function can be used to avoid it, modify its duration or start animation at any moment.
+
+nil entity_start_exploding(id, duration) - starts exploding animation of custom entity with specified id for given duration, after which it will be automatically destroyed.
+
+nil set_has_lost(v) - configures has_lost value of player configuration.
+
+nil set_shield(v) - sets shield amount of player.
+
+nil set_joystick_colors(c1, c2) - sets colors of movement and shooting joysticks respectively. If you only need to configure one of them, set value of other to nil or don't provide it.
+
+bool get_has_lost() - returns has_lost value of player's configuration. It is automatically set to 0 when player lose it's last shield.
+
+int get_shield() - returns amount of shields, player has.
+
+int new_bonus_shield(x, y, shield, box_duration, callback) - creates new bonus at a given location, which gives specified amount of shields on pickup, exists for specified duration and calls callback on pickup, if one was provided. Arguments of this callback are: bonus_id, 0, ship_id. Returns id of created bonus.
+
+int new_bonus_weapon(x, y, cannon, frequency, weapon_duration, box_duration, callback) - creates new bonus at a given location, which sets player ship weapon to one with specified parameters, exists for specified duration and calls callback on pickup, if one was provided. Arguments of this callback are: bonus_id, 0, ship_id. Returns id of created bonus.
+
+int new_bonus_speed(x, y, speed_factor, speed_offset, speed_duration, box_duration, callback) - creates new bonus at a given location, which sets player ship speed to one with specified parameters, exists for specified duration and calls callback on pickup, if one was provided. Arguments of this callback are: bonus_id, 0, ship_id. Returns id of created bonus.
+
+nil entity_change_pos(id, dx, dy) - changes position of entity with specified id by given vector.
+
+
+
+### Camera ###
+
+ppol has custom, highly customizable camera.
+
+There are lots of values, which can be used to modify camera behaviour.
+
+Current values determine position and angle of camera at the moment and are usually handled by camera itself. Still, there are ways to change them manually.
+
+Offset, static, min and max values can be used for cinematic purposes.
+
+Joystick offsets can be used to give feedback on joystick usage.
+
+By default built-in ease functions are used. There are ways to change them to default, custom or use default camera movement from PewPew Live(no ease at all).
+
+
+camera_mode - modes, at which camera can function
+  free - camera uses direct inputs from movement joystick.
+  entity - camera follows entity with specified id.
+  entities - camera follows entities with specified ids.
+  entity_type - camera follows entities with specified type.
+  entity_types - camera follows entities with specified types.
+  everything - camera follows every entity.
+
+camera - table, containing camera parameters and current position values. Most of these can be modified through corresponding functions, but some have to be modified manually.
+  current_x - current x position of camera. By default 0fx.
+  current_y - current y position of camera. By default 0fx.
+  current_z - current z position of camera. By default 0fx.
+  current_angle - current angle of camera. By default 0fx.
+  offset_x - x offset of camera. By default 0fx.
+  offset_y - y offset of camera. By default 0fx.
+  offset_z - z offset of camera. By default 0fx. PewPew Live has basic camera offset of -1000fx, not 0fx, which means offset_z = 0fx is considered -1000fx by PewPew Live. ppol doesn't fix that, so keep this weird behaviour in mind, when changing corresponding value.
+  offset_angle - angle offset of camera. By default 0fx.
+  static_x - static x position of camera. If presented, this value will override everything else.
+  static_y - static y position of camera. If presented, this value will override everything else.
+  static_z - static z position of camera. If presented, this value will override everything else.
+  static_angle - static angle of camera. If presented, this value will override everything else.
+  min_x - minimum x position of camera. If presented, x position of camera won't get lower than this.
+  min_y - minimum y position of camera. If presented, y position of camera won't get lower than this.
+  min_z - minimum z position of camera. If presented, z position of camera won't get lower than this.
+  min_angle - minimum angle of camera. If presented, angle of camera won't get lower than this.
+  max_x - maximum x position of camera. If presented, x position of camera won't get higher than this.
+  max_y - maximum y position of camera. If presented, y position of camera won't get higher than this.
+  max_z - maximum z position of camera. If presented, z position of camera won't get higher than this.
+  max_angle - maximum angle of camera. If presented, angle of camera won't get higher than this.
+  ease_function_xy - ease function, used to ease camera movement in xy plane. By default set to ease function, provided by ppol.
+  ease_function_z - ease function, used to ease camera movement along z axis. By default set to ease function, provided by ppol.
+  ease_function_angle - ease function, used to ease camera angle change. By default set to ease function, provided by ppol.
+  speed - camera speed, used by camera in free mode, default ease functions, provided by ppol and should be used in your ease functions for consistency. By default 10fx.
+  angle_speed - camera angle speed, used by default ease function, provided by ppol ang should be used in your ease functions for consistency. By default 0.512fx.
+  mode - current camera mode. By default camera_mode.free.
+  args - arguments for camera in its current mode.
+  movement_xy_offset - movement joystick xy offset. If presented, movement joystick xy offsets, multilied by this value will be applied to camera xy position.
+  movement_z_offset - movement joystick z offset. If presented, movement joysticks distance, multilied by this value will be applied to camera z position.
+  movement_angle_offset - movement joystick angle offset. If presented, movement joystick y offset, multilied by this value will be applied to camera angle offset.
+  shooting_xy_offset - shooting joystick xy offset. If presented, shooting joystick xy offsets, multilied by this value will be applied to camera xy position.
+  shooting_z_offset - shooting joystick z offset. If presented, shooting joysticks distance, multilied by this value will be applied to camera z position.
+  shooting_angle_offset - shooting joystick angle offset. If presented, shooting joystick y offset, multilied by this value will be applied to camera angle offset.
+  
+  
+  * next functions are still part of camera namespace
+  set_args(mode, args) - sets mode and arguments of camera. Inputs can be:
+    set_args(camera_mode.free) - sets camera mode to free, no additional arguments needed. Camera will get direct inputs from movement joystick.
+    set_args(camera_mode.entity, id) - sets camera mode to following entity with specified id. If entity isn't alive, latest camea position will be used as a base point instead.
+    set_args(camera_mode.entities, args) - sets camera mode to following entities with specified ids. args should be table with list of entities, camera should follow. Camera will follow averaged position between all alive entities. If any entity isn't alive anymore, it will be removed from the table.
+    set_args(camera_mode.entity_type, t) - sets camera mode to following entities with specified type. t should be type from entity_type. Camera will follow averaged position between all found entities. If none of such entities exist at the moment, latest camera position will be used instead.
+    set_args(camera_mode.entity_types, args) - sets camera mode to following entities with specified types. args should be table with list of types from entity_type, that camera should follow. Camera will follow averaged position between all found entities. If none of such entities exist at the moment, latest camera position will be used instead.
+    set_args(camera_mode.everything) - sets camera mode to follow every entity, no additional arguments needed. Camera will follow averaged position between all found entities. If no entities exist at the moment, latest camera position will be used instead.
+  
+  set_ease_functions(xy, z, angle) - sets corresponding ease functions to specified custom ones. xy ease function has argument list: dx, dy and should return modified dx, dy values. z and angle ease functions have argument list: dv and should return modified dv value. dx, dy, dv - corresponding changes from latest camera position or angle.
+  
+  remove_ease() - sets ease function to default one in PewPew Live, which directly applies all changes and thus, has no ease.
+  
+  set_default_ease() - sets ease function to built-in ones.
+  
+  force_pos(x, y, z) - sets current camera position to specified one.
+  
+  force_angle(a) - sets current camera angle to specified one.
+  
+  set_offset_pos(x, y, z) - sets camera position offsets to specified ones.
+  
+  set_offset_angle(a) - sets camera angle offset to specified one.
+  
+  set_static_pos(x, y, z) - sets camera static positions to specified ones.
+  
+  set_static_angle(a) - sets camera static angle to specified one.
+  
+  remove_static_pos() - removes camera static positions.
+  
+  remove_static_angle() - removes camera static angle.
+  
+  set_min_pos(x, y, z) - sets camera min positions to specified ones.
+  
+  set_min_angle(a) - sets camera min angle to specified one.
+  
+  remove_min_pos() - removes camera min positions.
+  
+  remove_min_angle() - removes camera min angle.
+  
+  set_max_pos(x, y, z) - sets camera max positions to specified ones.
+  
+  set_max_angle(a) - sets camera max angle to specified one.
+  
+  remove_max_pos() - removes camera max positions.
+  
+  remove_max_angle() - removes camera max angle.
+  
+  remove_joystick_offsets() - removes camera joysticks offsets.
+
+
+
+### Meshes ###
+
+PewPew Live uses custom environment for meshes. ppol also modifies it. Changes from usual one are: lack of pewpew and camera functions, new math functions.
+
+ppol reuses math library, available in mesh environment to define its own math functions. Fixedpoint math functions are also kept in this environment.
+
+
+PI - instead of math.pi
+TAU
+INT_HUGE - instead of math.huge
+INT_MIN - instead of math.mininteger
+INT_MAX - instead of math.maxinteger
+
+abs
+acos
+asin
+atan
+ceil
+cos
+deg
+exp
+tointeger
+floor
+fmod
+ult
+log
+max
+min
+modf
+rad
+random
+round
+sin
+sincos
+sqrt
+tan
+mtype - instead of math.type()
+
+
+In mesh environment ppol defines functions to optimize mesh creation. Also, meshes, defined by certain functions get access to built-in OOP methods.
+
+def_mesh(...) - returns table with mesh. Such mesh has access to OOP methods. Inputs are:
+  def_mesh() - creates empty mesh.
+  def_mesh(v, s, c) - any combination of vertex, segment or color tables. nil values or lack of argument will be repaced by empty table.
+
+def_meshes(n) - defines meshes table, using def_mesh(). Inputs are:
+  def_meshes() - defines empty meshes table.
+  def_meshes(n) - defines meshes table and inserts n meshes, defined by def_mesh().
+
+get_vsc(v) - retrieves vertex, segment, color tables from mesh. Inputs are:
+  get_vsc() - returns 3 empty tables.
+  get_vsc(i) - returns components of mesh, stored in meshes table at index i
+  get_vsc(mesh) - returns components of provided mesh
+
+rotate_vector(x, y, z, rx, ry, rz) - rotates vector, specified by xyz coordinates by angles around corresponding axis: rx, ry, rz and returns coordinates of rotated vector.
+
+rotate_mesh(mesh, rx, ry, rz) - uses previous function to rotate all vertexes in the mesh by corresponding angles.
+
+add_colors(mesh, color, n) - inserts color, depending on contents of c n times. Function is mostly used by other ppol mesh functions, but can be used in other purposes. Inputs are:
+  add_colors(mesh, color, n) - color is value, it will be inserted in mesh's color table n times.
+  add_colors(mesh, color, n) - color is table, corresponding values from this table will be inserted in mesh's color table. n represents amount of such additions, which means n first colors from color table will be added.
+  add_colors(mesh, color, n) - color is function, it will be called for values from 1 to n and its output will be added to mesh's color table.
+
+add_lines(mesh, color, ...) - adds lines in mesh. color input is similar to add_colors(). Line will be added into mesh for every to values in ... Every value is a table, containing coordinates of 1 end of a line and every 2 such points will create new line.
+
+add_polygon(mesh, color, ...) - adds closed polygon to mesh. Similar to previous function, but now every point is part of polygon and connected to the point which goes after or before it.
+
+add_curve(mesh, color, ...) - adds set of consecutive lines to mesh. Similar to previous function, but first and last points aren't connected.
+
+add_circle(mesh, color, offset, r, precision, rx, ry, rz) - adds circle, rotated by certain angle and moved by certain offset. color input is similar to add_colors(). r is radius and precision is amount of points in circle. offset is table that contains xyz offset of circle after it was rotated; if offset is nil, it won't be applied; otherwise it should be a table, containing xyz coordinates, representing offset; any coordinates that aren't presented will still be set to 0. rx, ry, rz represent rotation by corresponding axis; if corresponding value isn't presented, it will be set to 0.
+
+copy_vertexes(v, mod) - copies vertex table and returns the copy. Inputs are:
+  copy_vertexes(v) - copies vertex table and returns the copy.
+  copy_vertexes(v, mod) - copies vertex table and returns the copy. mod should be a function, used to modify vertex coordinates and return them. Inputs to this function are current index of vertex in vertex table and vertex itself.
+
+copy_segments(s) - copies segment table and returns the copy.
+
+copy_colors(c) - copies color table and returns the copy.
+
+insert_vertexes(from_v, to_v, mod) - inserts contents of vertex table in specified vertex table. mod input is similar to copy_vertexes().
+
+insert_segments(from_s, to_s, index_offset) - inserts contents of segment table in specified segment table. For each value index_offset will be applied; if it isn't specified, it will be set to 0.
+
+insert_colors(from_c, to_c) - inserts contents of color table in specified color table.
+
+copy_mesh(mesh, modv) - copies provided mesh and returns the copy. New mesh has access to OOP methods. modv input is similar to copy_vertexes().
+
+insert_mesh(from_mesh, to_mesh, modv) - inserts mesh in specified mesh. index offset is automatically applied. modv input is similar to copy_vertexes().
+
+
+OOP methods of created meshes are based on functions, mentioned earlier:
+mesh:get_vsc()
+mesh:rotate(rx, ry, rz)
+mesh:add_colors(c, n)
+mesh:add_lines(c, ...)
+mesh:add_polygon(c, ...)
+mesh:add_curve(c, ...)
+mesh:add_circle(c, offset, r, precision, rx, ry, rz)
+mesh:copy_vertexes(mod) - copies respective table from this mesh
+mesh:copy_segments()
+mesh:copy_colors()
+mesh:insert_vertexes(from_v, mod) - insert into respective table in this mesh
+mesh:insert_segments(from_s, index_offset)
+mesh:insert_colors(from_c)
+mesh:copy(modv)
+mesh:insert(from_mesh, modv)
