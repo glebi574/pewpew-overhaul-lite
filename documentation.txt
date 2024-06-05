@@ -1,7 +1,7 @@
 
 PPOL(ppol) - pewpew-overhail-lite ; v0.10
 
-ppol is a lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. ppol also adds new features to simplify certain development processes, such as mesh halpers and camera framework. Currently ppol is only compatible with singleplayer, as it is imposible to create custom levels for multiplayer anyway.
+ppol is a lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. ppol also adds new features to simplify certain development processes, such as mesh helpers and camera framework. Currently ppol is only compatible with singleplayer, as it is imposible to create custom levels for multiplayer anyway.
 
 To include ppol in your level, copy ppol folder in your level folder. In the beginning of the file, that is the entry point of your level, defined in manifest.json (usually level.lua), require ppol entry point:
 
