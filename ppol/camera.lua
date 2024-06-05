@@ -91,7 +91,7 @@ local function camera_main()
   if camera.mode == camera_mode.free then
     camera.current_x = camera.current_x + inputs.mdx * camera.speed
     camera.current_y = camera.current_y + inputs.mdy * camera.speed
-    camera.current_z = camera.current_z + camera.ease_function_z(camera.base_z - camera.current_z)
+    camera.current_z = camera.current_z + camera.ease_function_z(camera.offset_z - camera.current_z)
     camera.current_angle = camera.current_angle + camera.ease_function_angle(camera.base_angle - camera.current_angle)
     update_camera()
     return
