@@ -4,8 +4,8 @@ camera_mode = {
   free = 0, -- direct control from movement joystick
   entity = 1, -- follow entity with set id
   entities = 2, -- follow entities with set ids
-  entity_mode = 3, -- follow entities with set mode; unoptimized
-  entity_modes = 4, -- follow entities with set modes; unoptimized
+  entity_type = 3, -- follow entities with set type; unoptimized
+  entity_types = 4, -- follow entities with set types; unoptimized
   everything = 5, -- follow every entity
 }
 
@@ -64,15 +64,15 @@ camera = {
   max_z = nil,
   max_angle = nil,
   
-  ease_function_xy = default_ease_xy, -- functions to ease change of respective values
-  ease_function_z = default_ease_z, -- input and output are respective delta values
-  ease_function_angle = default_ease_angle,
+  ease_function_xy = ease_function_no_ease, -- functions to ease change of respective values
+  ease_function_z = ease_function_no_ease, -- input and output are respective delta values
+  ease_function_angle = ease_function_no_ease,
   
   speed = 10fx, -- speed of camera. Used in free mode and should be used for ease functions
   angle_speed = 0.512fx,
   
-  mode = camera_mode.free, -- camera mode, controls which entities are followed or if it's in free mode
-  args = nil, -- arguments for respective camera mode
+  mode = camera_mode.entity_type, -- camera mode, controls which entities are followed or if it's in free mode
+  args = entity_type.ship, -- arguments for respective camera mode
   
   movement_xy_offset = nil, -- respective offsets on joysticks movements
   movement_z_offset = nil,
@@ -118,9 +118,9 @@ local function camera_main()
       goal_x, goal_y = goal_x / entity_amount, goal_y / entity_amount
       no_goal = false
     end
-  elseif camera.mode == camera_mode.entity_mode then
-    for _, id in ipairs(get_all_entities) do
-      if entity_get_is_alive(id) and get_entity_mode(id) == camera.args then
+  elseif camera.mode == camera_mode.entity_type then
+    for _, id in ipairs(get_all_entities()) do
+      if entity_get_is_alive(id) and get_entity_type(id) == camera.args then
         local x, y = entity_get_pos(id)
         goal_x, goal_y = goal_x + x, goal_y + y
         entity_amount = entity_amount + 1fx
@@ -130,18 +130,18 @@ local function camera_main()
       goal_x, goal_y = goal_x / entity_amount, goal_y / entity_amount
       no_goal = false
     end
-  elseif camera.mode == camera_mode.entity_modes then
-    for _, id in ipairs(get_all_entities) do
+  elseif camera.mode == camera_mode.entity_types then
+    for _, id in ipairs(get_all_entities()) do
       if entity_get_is_alive(id) then
-        local is_correct_mode = false
-        local et = get_entity_mode(id)
+        local is_correct_type = false
+        local et = get_entity_type(id)
         for _, t in ipairs(camera.args) do
           if et == t then
-            is_correct_mode = true
+            is_correct_type = true
             break
           end
         end
-        if is_correct_mode then
+        if is_correct_type then
           local x, y = entity_get_pos(id)
           goal_x, goal_y = goal_x + x, goal_y + y
           entity_amount = entity_amount + 1fx

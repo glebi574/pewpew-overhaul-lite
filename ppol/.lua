@@ -38,10 +38,12 @@ function rmn(...)
   end
 end
 
-if math then
-  ppo_require('base', 'fmath', 'mesh')
-else
+if not math then
   ppo_require('base', 'fmath', 'pewpew', 'camera')
+elseif PPO_SOUND then
+  ppo_require('base', 'sound')
+else
+  ppo_require('base', 'fmath', 'mesh')
 end
 
 if not PPO_NDEBUG then

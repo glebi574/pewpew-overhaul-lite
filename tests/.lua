@@ -21,7 +21,19 @@ local id = add_test_mesh(10fx, 10fx, 0xff0000ff, 1fx)
 entity_set_mesh_angle(id, FX_PI / 4fx, 0fx, 0fx, 1fx)
 
 camera.set_args(camera_mode.entity, id)
+camera.set_default_ease()
+
+local time = 0
+preload_sounds('tests', 'sound')
 
 add_update_callback(function()
+
   entity_change_pos(id, inputs.mdx * 10fx, inputs.mdy * 10fx)
+  
+  if time % 30 == 0 then
+    --play_sound('tests/sound')
+  end
+  time = time + 1
+  
 end)
+

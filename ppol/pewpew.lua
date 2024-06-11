@@ -116,12 +116,17 @@ remove_wall = pewpew.remove_wall
 
 local update_callbacks = {}
 local post_update_callbacks = {}
+local tmp_update_callbacks = {}
 pewpew.add_update_callback(function()
   for _, c in ipairs(update_callbacks) do
     c()
   end
   for _, c in ipairs(post_update_callbacks) do
     c()
+  end
+  for i = #tmp_update_callbacks, 1, -1 do
+    tmp_update_callbacks[i]()
+    table.remove(tmp_update_callbacks, i)
   end
 end)
 
@@ -131,6 +136,10 @@ end
 
 function add_post_update_callback(f)
   table.insert(post_update_callbacks, 1, f)
+end
+
+function add_tmp_update_callback(f)
+  table.insert(tmp_update_callbacks, f)
 end
 
 local __increase_score_of_player = pewpew.increase_score_of_player
@@ -350,6 +359,23 @@ end
 function entity_change_pos(id, dx, dy)
   local x, y = entity_get_pos(id)
   entity_set_pos(id, x + dx, y + dy)
+end
+
+function preload_sounds(folder, ...)
+  local args = {...}
+  add_tmp_update_callback(function()
+    if #args == 1 or type(args[2]) == 'string' then
+      for _, file in ipairs(args) do
+        play_sound(string.format('%s/%s', folder, file), -10000fx, -10000fx)
+      end
+    else
+      for i = 1, #args, 2 do
+        for k = 0, args[i + 1] - 1 do
+          play_sound(string.format('%s/%s', folder, args[i]), -10000fx, -10000fx, k)
+        end
+      end
+    end
+  end)
 end
 
 local __get_player_inputs = pewpew.get_player_inputs

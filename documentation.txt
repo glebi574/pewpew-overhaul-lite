@@ -1,7 +1,7 @@
 
 PPOL(ppol) - pewpew-overhail-lite ; v0.10
 
-ppol is a lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. ppol also adds new features to simplify certain development processes, such as mesh helpers and camera framework. Currently ppol is only compatible with singleplayer, as it is imposible to create custom levels for multiplayer anyway.
+ppol is a lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. ppol adds new features to simplify certain development processes, such as mesh helpers, sound parser and camera framework. ppol also adds proper error messages to functions, that don't have them. Currently ppol is only compatible with singleplayer, as it is imposible to create custom levels for multiplayer anyway.
 
 To include ppol in your level, copy ppol folder in your level folder. In the beginning of the file, that is the entry point of your level, defined in manifest.json (usually level.lua), require ppol entry point:
 
@@ -10,12 +10,6 @@ require'/dynamic/ppol/.lua'
 I assume, that you'll copy ppol folder directly in your level folder, but if you need to place it somewhere else, just modify ppo_require function in ppol\.lua so it returns the correct path of ppol files.
 
 ppol includes some functions for debugging and testing. To not load them, create global variable PPO_NDEBUG before requiring ppol and set it to value other than nil or false.
-
-ppol uses custom camera movement, so you will have to set it up first. By default camera is in the free mode, which means it will receive direct input from movement joystick. Camera in ppol has plenty of settings, but in usual case of level with 1 player ship this would be enough to make camera follow your player ship:
-
-camera.set_args(camera_mode.entity, id)
-
-In this case id is an id of entity you want to follow and camera_mode.entity is camera mode, which specifies how camera should work. For more information see documentation below.
 
 This documentation only talks about how ppol works, considering all changes PewPew Live does on its own.
 If you want to see difference between ppl API and ppol, see ppl-diff.txt
@@ -208,7 +202,9 @@ nil remove_wall(wall_id) - removes wall with specified wall id.
 
 nil add_update_callback(f) - adds specified function in a list. These functions will be called every tick in the order they were added.
 
-nil add_post_update_callback(f) - adds specified function in a list. These functions will be called every tick after functions, added by add_update_callback() in reversed order they were added.
+nil add_post_update_callback(f) - adds specified function in a list. These functions will be called every tick after usual update callbacks in reversed order they were added.
+
+nil add_tmp_update_callback(f) - adds specified function in a list. These function will be called every tick after usual and post update callbacks and will be deleted after that. That is meant to call some code once in specific cases, such as certain functions working only after level was initialized. Those include setting meshes, playing sounds and others.
 
 nil increase_score(v) - increases score of player by provided value. If all player ships are destroyed, player's configuration has_lost will be set to true, disallowing to change score. Use set_has_lost(false), which can be found below, to modify player's score in that condition.
 
@@ -362,6 +358,10 @@ int new_bonus_speed(x, y, speed_factor, speed_offset, speed_duration, box_durati
 
 nil entity_change_pos(id, dx, dy) - changes position of entity with specified id by given vector.
 
+nil preload_sounds(folder_path, ...) - preloads all listed sounds. Can be used to avoid delay, caused by sounds being loaded while you play level, not on the start. Inputs are:
+  preload_sounds(folder_path, path1, path2, path3, ...) - folder_path is the common path of next paths. Every next path will be concatenated with folder path and every first sound in files at these paths will be preloaded.
+  preload_sounds(folder_path, path1, amount1, path2, amount2, ...) - folder_path is the common path of next paths. Every next path will be concatenated with folder path, every number after the path is amount of songs in respective file, which will be preloaded.
+
 
 
 ### Camera ###
@@ -413,8 +413,8 @@ camera - table, containing camera parameters and current position values. Most o
   ease_function_angle - ease function, used to ease camera angle change. By default set to ease function, provided by ppol.
   speed - camera speed, used by camera in free mode, default ease functions, provided by ppol and should be used in your ease functions for consistency. By default 10fx.
   angle_speed - camera angle speed, used by default ease function, provided by ppol ang should be used in your ease functions for consistency. By default 0.512fx.
-  mode - current camera mode. By default camera_mode.free.
-  args - arguments for camera in its current mode.
+  mode - current camera mode. By default camera_mode.entity_type.
+  args - arguments for camera in its current mode. By default entity_type.ship
   movement_xy_offset - movement joystick xy offset. If presented, movement joystick xy offsets, multilied by this value will be applied to camera xy position.
   movement_z_offset - movement joystick z offset. If presented, movement joysticks distance, multilied by this value will be applied to camera z position.
   movement_angle_offset - movement joystick angle offset. If presented, movement joystick y offset, multilied by this value will be applied to camera angle offset.
@@ -424,7 +424,7 @@ camera - table, containing camera parameters and current position values. Most o
   
   
   * next functions are still part of camera namespace
-  set_args(mode, args) - sets mode and arguments of camera. Inputs can be:
+  nil set_args(mode, args) - sets mode and arguments of camera. Inputs can be:
     set_args(camera_mode.free) - sets camera mode to free, no additional arguments needed. Camera will get direct inputs from movement joystick.
     set_args(camera_mode.entity, id) - sets camera mode to following entity with specified id. If entity isn't alive, latest camea position will be used as a base point instead.
     set_args(camera_mode.entities, args) - sets camera mode to following entities with specified ids. args should be table with list of entities, camera should follow. Camera will follow averaged position between all alive entities. If any entity isn't alive anymore, it will be removed from the table.
@@ -432,45 +432,45 @@ camera - table, containing camera parameters and current position values. Most o
     set_args(camera_mode.entity_types, args) - sets camera mode to following entities with specified types. args should be table with list of types from entity_type, that camera should follow. Camera will follow averaged position between all found entities. If none of such entities exist at the moment, latest camera position will be used instead.
     set_args(camera_mode.everything) - sets camera mode to follow every entity, no additional arguments needed. Camera will follow averaged position between all found entities. If no entities exist at the moment, latest camera position will be used instead.
   
-  set_ease_functions(xy, z, angle) - sets corresponding ease functions to specified custom ones. xy ease function has argument list: dx, dy and should return modified dx, dy values. z and angle ease functions have argument list: dv and should return modified dv value. dx, dy, dv - corresponding changes from latest camera position or angle.
+  nil set_ease_functions(xy, z, angle) - sets corresponding ease functions to specified custom ones. xy ease function has argument list: dx, dy and should return modified dx, dy values. z and angle ease functions have argument list: dv and should return modified dv value. dx, dy, dv - corresponding changes from latest camera position or angle.
   
-  remove_ease() - sets ease function to default one in PewPew Live, which directly applies all changes and thus, has no ease.
+  nil remove_ease() - sets ease function to default one in PewPew Live, which directly applies all changes and thus, has no ease.
   
-  set_default_ease() - sets ease function to built-in ones.
+  nil set_default_ease() - sets ease function to built-in ones.
   
-  force_pos(x, y, z) - sets current camera position to specified one.
+  nil force_pos(x, y, z) - sets current camera position to specified one.
   
-  force_angle(a) - sets current camera angle to specified one.
+  nil force_angle(a) - sets current camera angle to specified one.
   
-  set_offset_pos(x, y, z) - sets camera position offsets to specified ones.
+  nil set_offset_pos(x, y, z) - sets camera position offsets to specified ones.
   
-  set_offset_angle(a) - sets camera angle offset to specified one.
+  nil set_offset_angle(a) - sets camera angle offset to specified one.
   
-  set_static_pos(x, y, z) - sets camera static positions to specified ones.
+  nil set_static_pos(x, y, z) - sets camera static positions to specified ones.
   
-  set_static_angle(a) - sets camera static angle to specified one.
+  nil set_static_angle(a) - sets camera static angle to specified one.
   
-  remove_static_pos() - removes camera static positions.
+  nil remove_static_pos() - removes camera static positions.
   
-  remove_static_angle() - removes camera static angle.
+  nil remove_static_angle() - removes camera static angle.
   
-  set_min_pos(x, y, z) - sets camera min positions to specified ones.
+  nil set_min_pos(x, y, z) - sets camera min positions to specified ones.
   
-  set_min_angle(a) - sets camera min angle to specified one.
+  nil set_min_angle(a) - sets camera min angle to specified one.
   
-  remove_min_pos() - removes camera min positions.
+  nil remove_min_pos() - removes camera min positions.
   
-  remove_min_angle() - removes camera min angle.
+  nil remove_min_angle() - removes camera min angle.
   
-  set_max_pos(x, y, z) - sets camera max positions to specified ones.
+  nil set_max_pos(x, y, z) - sets camera max positions to specified ones.
   
-  set_max_angle(a) - sets camera max angle to specified one.
+  nil set_max_angle(a) - sets camera max angle to specified one.
   
-  remove_max_pos() - removes camera max positions.
+  nil remove_max_pos() - removes camera max positions.
   
-  remove_max_angle() - removes camera max angle.
+  nil remove_max_angle() - removes camera max angle.
   
-  remove_joystick_offsets() - removes camera joysticks offsets.
+  nil remove_joystick_offsets() - removes camera joysticks offsets.
 
 
 
@@ -513,70 +513,79 @@ tan
 mtype - instead of math.type()
 
 
-In mesh environment ppol defines functions to optimize mesh creation. Also, meshes, defined by certain functions get access to built-in OOP methods.
+In mesh environment ppol defines functions to optimize mesh creation. Also, meshes, defined by certain functions get access to built-in OOP methods. ppol defines meshes table on its execution.
 
-def_mesh(...) - returns table with mesh. Such mesh has access to OOP methods. Inputs are:
+table def_mesh(...) - returns table with mesh. Such mesh has access to OOP methods. Inputs are:
   def_mesh() - creates empty mesh.
   def_mesh(v, s, c) - any combination of vertex, segment or color tables. nil values or lack of argument will be repaced by empty table.
 
-def_meshes(n) - defines meshes table, using def_mesh(). Inputs are:
-  def_meshes() - defines empty meshes table.
-  def_meshes(n) - defines meshes table and inserts n meshes, defined by def_mesh().
+nil def_meshes(n) - adds n meshes to meshes table.
 
-get_vsc(v) - retrieves vertex, segment, color tables from mesh. Inputs are:
+table, table, table get_vsc(v) - retrieves vertex, segment, color tables from mesh. Inputs are:
   get_vsc() - returns 3 empty tables.
   get_vsc(i) - returns components of mesh, stored in meshes table at index i
   get_vsc(mesh) - returns components of provided mesh
 
-rotate_vector(x, y, z, rx, ry, rz) - rotates vector, specified by xyz coordinates by angles around corresponding axis: rx, ry, rz and returns coordinates of rotated vector.
+int, int, int rotate_vector(x, y, z, rx, ry, rz) - rotates vector, specified by xyz coordinates by angles around corresponding axis: rx, ry, rz and returns coordinates of rotated vector.
 
-rotate_mesh(mesh, rx, ry, rz) - uses previous function to rotate all vertexes in the mesh by corresponding angles.
+nil rotate_mesh(mesh, rx, ry, rz) - uses previous function to rotate all vertexes in the mesh by corresponding angles.
 
-add_colors(mesh, color, n) - inserts color, depending on contents of c n times. Function is mostly used by other ppol mesh functions, but can be used in other purposes. Inputs are:
+nil add_colors(mesh, color, n) - inserts color, depending on contents of c n times. Function is mostly used by other ppol mesh functions, but can be used in other purposes. Inputs are:
   add_colors(mesh, color, n) - color is value, it will be inserted in mesh's color table n times.
   add_colors(mesh, color, n) - color is table, corresponding values from this table will be inserted in mesh's color table. n represents amount of such additions, which means n first colors from color table will be added.
   add_colors(mesh, color, n) - color is function, it will be called for values from 1 to n and its output will be added to mesh's color table.
 
-add_lines(mesh, color, ...) - adds lines in mesh. color input is similar to add_colors(). Line will be added into mesh for every to values in ... Every value is a table, containing coordinates of 1 end of a line and every 2 such points will create new line.
+nil add_lines(mesh, color, ...) - adds lines in mesh. color input is similar to add_colors(). Line will be added into mesh for every to values in ... Every value is a table, containing coordinates of 1 end of a line and every 2 such points will create new line.
 
-add_polygon(mesh, color, ...) - adds closed polygon to mesh. Similar to previous function, but now every point is part of polygon and connected to the point which goes after or before it.
+nil add_polygon(mesh, color, ...) - adds closed polygon to mesh. Similar to previous function, but now every point is part of polygon and connected to the point which goes after or before it.
 
-add_curve(mesh, color, ...) - adds set of consecutive lines to mesh. Similar to previous function, but first and last points aren't connected.
+nil add_curve(mesh, color, ...) - adds set of consecutive lines to mesh. Similar to previous function, but first and last points aren't connected.
 
-add_circle(mesh, color, offset, r, precision, rx, ry, rz) - adds circle, rotated by certain angle and moved by certain offset. color input is similar to add_colors(). r is radius and precision is amount of points in circle. offset is table that contains xyz offset of circle after it was rotated; if offset is nil, it won't be applied; otherwise it should be a table, containing xyz coordinates, representing offset; any coordinates that aren't presented will still be set to 0. rx, ry, rz represent rotation by corresponding axis; if corresponding value isn't presented, it will be set to 0.
+nil add_circle(mesh, color, offset, r, precision, rx, ry, rz) - adds circle, rotated by certain angle and moved by certain offset. color input is similar to add_colors(). r is radius and precision is amount of points in circle. offset is table that contains xyz offset of circle after it was rotated; if offset is nil, it won't be applied; otherwise it should be a table, containing xyz coordinates, representing offset; any coordinates that aren't presented will still be set to 0. rx, ry, rz represent rotation by corresponding axis; if corresponding value isn't presented, it will be set to 0.
 
-copy_vertexes(v, mod) - copies vertex table and returns the copy. Inputs are:
+table copy_vertexes(v, mod) - copies vertex table and returns the copy. Inputs are:
   copy_vertexes(v) - copies vertex table and returns the copy.
   copy_vertexes(v, mod) - copies vertex table and returns the copy. mod should be a function, used to modify vertex coordinates and return them. Inputs to this function are current index of vertex in vertex table and vertex itself.
 
-copy_segments(s) - copies segment table and returns the copy.
+table copy_segments(s) - copies segment table and returns the copy.
 
-copy_colors(c) - copies color table and returns the copy.
+table copy_colors(c) - copies color table and returns the copy.
 
-insert_vertexes(from_v, to_v, mod) - inserts contents of vertex table in specified vertex table. mod input is similar to copy_vertexes().
+nil insert_vertexes(from_v, to_v, mod) - inserts contents of vertex table in specified vertex table. mod input is similar to copy_vertexes().
 
-insert_segments(from_s, to_s, index_offset) - inserts contents of segment table in specified segment table. For each value index_offset will be applied; if it isn't specified, it will be set to 0.
+nil insert_segments(from_s, to_s, index_offset) - inserts contents of segment table in specified segment table. For each value index_offset will be applied; if it isn't specified, it will be set to 0.
 
-insert_colors(from_c, to_c) - inserts contents of color table in specified color table.
+nil insert_colors(from_c, to_c) - inserts contents of color table in specified color table.
 
-copy_mesh(mesh, modv) - copies provided mesh and returns the copy. New mesh has access to OOP methods. modv input is similar to copy_vertexes().
+table copy_mesh(mesh, modv) - copies provided mesh and returns the copy. New mesh has access to OOP methods. modv input is similar to copy_vertexes().
 
-insert_mesh(from_mesh, to_mesh, modv) - inserts mesh in specified mesh. index offset is automatically applied. modv input is similar to copy_vertexes().
+nil insert_mesh(from_mesh, to_mesh, modv) - inserts mesh in specified mesh. index offset is automatically applied. modv input is similar to copy_vertexes().
 
 
 OOP methods of created meshes are based on functions, mentioned earlier:
-mesh:get_vsc()
-mesh:rotate(rx, ry, rz)
-mesh:add_colors(c, n)
-mesh:add_lines(c, ...)
-mesh:add_polygon(c, ...)
-mesh:add_curve(c, ...)
-mesh:add_circle(c, offset, r, precision, rx, ry, rz)
-mesh:copy_vertexes(mod) - copies respective table from this mesh
-mesh:copy_segments()
-mesh:copy_colors()
-mesh:insert_vertexes(from_v, mod) - insert into respective table in this mesh
-mesh:insert_segments(from_s, index_offset)
-mesh:insert_colors(from_c)
-mesh:copy(modv)
-mesh:insert(from_mesh, modv)
+table, table, table mesh:get_vsc()
+nil mesh:rotate(rx, ry, rz)
+nil mesh:add_colors(c, n)
+nil mesh:add_lines(c, ...)
+nil mesh:add_polygon(c, ...)
+nil mesh:add_curve(c, ...)
+nil mesh:add_circle(c, offset, r, precision, rx, ry, rz)
+table mesh:copy_vertexes(mod) - copies respective table from this mesh and returns it
+table mesh:copy_segments()
+table mesh:copy_colors()
+nil mesh:insert_vertexes(from_v, mod) - insert into respective table in this mesh
+nil mesh:insert_segments(from_s, index_offset)
+nil mesh:insert_colors(from_c)
+table mesh:copy(modv)
+nil mesh:insert(from_mesh, modv)
+
+
+
+### Sounds ###
+
+PewPew Live uses custom environment for sounds. It is similar to mesh environment, so you have to define PPO_SOUND with value other than nil or false. After this step you can require ppol as usual.
+
+In this environment ppol loads only its base features and sound library. ppol defines sounds table on its execution.
+
+
+nil add_sound(link) - converts link from jfxr into sound table, understandable by ppl and adds it into sounds table.

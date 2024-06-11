@@ -20,6 +20,7 @@ pi, huge, maxinteger, mininteger = nil, nil, nil, nil
 rmn'math'
 
 
+meshes = {}
 local mesh_proto = {}
 local mesh_proto_mt = {__index = mesh_proto}
 
@@ -30,8 +31,6 @@ function def_mesh(v, s, c)
 end
 
 function def_meshes(n)
-  meshes = {}
-  n = n or 0
   for i = 1, n do
     table.insert(meshes, def_mesh())
   end
