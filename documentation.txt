@@ -1,5 +1,5 @@
 
-PPOL(ppol) - pewpew-overhail-lite ; v0.10
+PPOL(ppol) - pewpew-overhail-lite ; version 1.0.0
 
 ppol is a lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. ppol adds new features to simplify certain development processes, such as mesh helpers, sound parser and camera framework. ppol also adds proper error messages to functions, that don't have them. Currently ppol is only compatible with singleplayer, as it is imposible to create custom levels for multiplayer anyway.
 
@@ -15,6 +15,7 @@ This documentation only talks about how ppol works, considering all changes PewP
 If you want to see difference between ppl API and ppol, see ppl-diff.txt
 If you want to see original documentation for ppl, all up-to-date links should be in its GitHub page: https://github.com/pewpewlive/ppl-utils
 ppol also has GitBook docs: https://ppo.gitbook.io/pewpew-overhaul-lite
+There's also examples.lua, which contains some examples for complicated features. GitBook docs has examples for most features already and has links to level, created using ppol.
 
 
 
@@ -204,7 +205,7 @@ nil add_update_callback(f) - adds specified function in a list. These functions 
 
 nil add_post_update_callback(f) - adds specified function in a list. These functions will be called every tick after usual update callbacks in reversed order they were added.
 
-nil add_tmp_update_callback(f) - adds specified function in a list. These function will be called every tick after usual and post update callbacks and will be deleted after that. That is meant to call some code once in specific cases, such as certain functions working only after level was initialized. Those include setting meshes, playing sounds and others.
+nil add_tmp_update_callback(f) - adds specified function in a list. These functions will be called every tick after usual and post update callbacks in reversed order they were added and will be deleted after that. That can be used to execute some code once at the beginning of the next tick before usual and post update callbacks. This can include specific cases of pewpew functions working only after level was initialized, such as playing sounds or loading meshes.
 
 nil increase_score(v) - increases score of player by provided value. If all player ships are destroyed, player's configuration has_lost will be set to true, disallowing to change score. Use set_has_lost(false), which can be found below, to modify player's score in that condition.
 
@@ -228,7 +229,7 @@ nil remove_arrow(ship_id, arrow_id) - removes specified arrow from specified pla
 
 nil make_player_ship_transparent(ship_id, duration) - makes player ship transparent for specified amount of ticks.
 
-nil set_player_ship_speed(id, factor, offset, duration) - sets player ship speed to (factor * 10fx) + offset for given duration. If duration isn't provided, player will have such speed indefinitely.
+nil set_player_ship_speed(id, speed, duration) - sets player ship speed to specified one for given duration. Default ship speed is 10fx. If duration isn't provided, player will have given speed indefinitely.
 
 table get_all_entities() - returns table, containing all entities. Entities in such table are stored as a list, sorted by entity ids in ascending order.
 
@@ -243,6 +244,7 @@ nil play_sound(path, ...) - plays sound, located in a file with provided path at
   play_sound(path, i) plays ambient sound from file, described by path at index i.
   play_sound(path, x, y) plays sound at (x; y) from file, described by path at index 0.
   play_sound(path, x, y, i) plays sound at (x; y) from file, described by path at index i.
+  * note that these indexes start from 0, not 1
 
 nil create_explosion(x, y, color, scale, particle_amount) - creates explosion at a given location, with specified amount of particles, having specified color, scaled by given value. Scale should be in range (1fx; 10fx] and particle amount - in range [1; 100].
 
@@ -300,6 +302,7 @@ nil entity_set_mesh(id, path, ...) - sets mesh of a custom entity with specified
   entity_set_mesh(id, path) - sets mesh of custom entity specified by id to mesh in file, described by path at index 0
   entity_set_mesh(id, path, i) - sets mesh of custom entity specified by id to mesh in file, described by path at index i
   entity_set_mesh(id, path, i1, i2) - sets flipping meshes of custom entity specified by id to meshes in file, described by path at indexes i1 and i2
+  * note that these indexes start from 0, not 1
 
 nil entity_set_mesh_color(id, color) - sets mesh color of custom entity with specified id.
 
@@ -354,7 +357,7 @@ int new_bonus_shield(x, y, shield, box_duration, callback) - creates new bonus a
 
 int new_bonus_weapon(x, y, cannon, frequency, weapon_duration, box_duration, callback) - creates new bonus at a given location, which sets player ship weapon to one with specified parameters, exists for specified duration and calls callback on pickup, if one was provided. Arguments of this callback are: bonus_id, 0, ship_id. Returns id of created bonus.
 
-int new_bonus_speed(x, y, speed_factor, speed_offset, speed_duration, box_duration, callback) - creates new bonus at a given location, which sets player ship speed to one with specified parameters, exists for specified duration and calls callback on pickup, if one was provided. Arguments of this callback are: bonus_id, 0, ship_id. Returns id of created bonus.
+int new_bonus_speed(x, y, speed, speed_duration, box_duration, callback) - creates new bonus at a given location, which sets player ship speed to specified one, exists for specified duration and calls callback on pickup, if one was provided. Arguments of this callback are: bonus_id, 0, ship_id. Returns id of created bonus.
 
 nil entity_change_pos(id, dx, dy) - changes position of entity with specified id by given vector.
 

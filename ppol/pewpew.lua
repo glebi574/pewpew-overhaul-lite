@@ -184,8 +184,8 @@ remove_arrow = pewpew.remove_arrow_from_player_ship
 make_player_ship_transparent = pewpew.make_player_ship_transparent
 
 local __set_player_ship_speed = pewpew.set_player_ship_speed
-function set_player_ship_speed(id, factor, offset, duration)
-  return __set_player_ship_speed(id, factor, offset, duration or -1)
+function set_player_ship_speed(id, speed, duration)
+  return __set_player_ship_speed(id, 0fx, speed, duration or -1)
 end
 
 get_all_entities = pewpew.get_all_entities
@@ -352,8 +352,8 @@ function new_bonus_weapon(x, y, cannon, frequency, weapon_duration, box_duration
   return __new_bonus(x, y, bonus_type.weapon, {cannon = cannon, frequency = frequency, weapon_duration = weapon_duration, box_duration = box_duration, taken_callback = callback})
 end
 
-function new_bonus_speed(x, y, speed_factor, speed_offset, speed_duration, box_duration, callback)
-  return __new_bonus(x, y, bonus_type.speed, {speed_factor = speed_factor, speed_offset = speed_offset, speed_duration = speed_duration, box_duration = box_duration, taken_callback = callback})
+function new_bonus_speed(x, y, speed, speed_duration, box_duration, callback)
+  return __new_bonus(x, y, bonus_type.speed, {speed_factor = 0fx, speed_offset = speed, speed_duration = speed_duration, box_duration = box_duration, taken_callback = callback})
 end
 
 function entity_change_pos(id, dx, dy)

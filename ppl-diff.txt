@@ -85,7 +85,7 @@ pewpew.add_wall(x1, y1, x2, y2) -> add_wall(x1, y1, x2, y2)
 
 pewpew.remove_wall(id) -> remove_wall(id)
 
-pewpew.add_update_callback(f) -> add_update_callback(f)
+pewpew.add_update_callback(f) - removed. Replaced by add_update_callback(), add_post_update_callback(), add_tmp_update_callback().
 
 pewpew.get_number_of_players() - removed.
 
@@ -117,7 +117,7 @@ pewpew.remove_arrow_from_player_ship(ship_id, arrow_id) -> remove_arrow(ship_id,
 
 pewpew.make_player_ship_transparent(id, duration) -> make_player_ship_transparent(id, duration)
 
-pewpew.set_player_ship_speed(id, factor, offset, duration) -> set_player_ship_speed(id, factor, offset, duration)
+pewpew.set_player_ship_speed(id, factor, offset, duration) -> set_player_ship_speed(id, speed, duration)
 
 pewpew.get_all_entities() -> get_all_entities()
 

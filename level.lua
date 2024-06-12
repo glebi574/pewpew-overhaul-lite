@@ -2,3 +2,4 @@
 require'/dynamic/ppol/.lua'
 
 require'tests/'
+--require'examples'
