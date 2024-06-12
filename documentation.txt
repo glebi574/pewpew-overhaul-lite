@@ -9,7 +9,9 @@ require'/dynamic/ppol/.lua'
 
 I assume, that you'll copy ppol folder directly in your level folder, but if you need to place it somewhere else, just modify ppo_require function in ppol\.lua so it returns the correct path of ppol files.
 
-ppol includes some functions for debugging and testing. To not load them, create global variable PPO_NDEBUG before requiring ppol and set it to value other than nil or false.
+ppol has special features for mesh and sound environments. To use them, require ppol in file, which needs these features, as you did earlier. Mesh environment will be recognized automatically, but for sound environment you would have to define PPO_SOUND first and set it to value other than nil or false.
+
+ppol includes some features for debugging and testing. To not load them, create global variable PPO_NDEBUG before requiring ppol and set it to value other than nil or false. That also turns off error messages, added by ppol to some functions, so be careful.
 
 This documentation only talks about how ppol works, considering all changes PewPew Live does on its own.
 If you want to see difference between ppl API and ppol, see ppl-diff.txt
