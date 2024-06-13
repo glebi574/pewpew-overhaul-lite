@@ -164,16 +164,7 @@ cannon_type - table with cannon types, used by ppl
   double_swipe
   hemisphere
 
-cannon_frequency - table with cannon frequencies, used by ppl
-  _30
-  _15
-  _10
-  _7_5
-  _6
-  _5
-  _3
-  _2
-  _1
+cannon_frequency - table with cannon frequencies, used by ppl. Index corresponds to amount of times, player ship's cannon will shoot per second. Acceptable indexes are: 1, 2, 3, 5, 6, 7.5, 10, 15, 30.
 
 bomb_type - table with bomb types, used by ppl
   freeze

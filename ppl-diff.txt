@@ -64,7 +64,7 @@ pewpew.MothershipType -> mothership_type - doesn't use keys anymore, only indexe
 
 pewpew.CannonType -> cannon_type - all names are now lower case.
 
-pewpew.CannonFrequency -> cannon_frequency - no 'FREQ' part, so pewpew.CannonFrequency.FREQ_30 now can be accessed as cannon_frequency._30 .
+pewpew.CannonFrequency -> cannon_frequency - doesn't use keys anymore, only indexes: pewpew.CannonFrequency.FREQ_7_5 now can be accessed as cannon_frequency[7.5] .
 
 pewpew.BombType -> bomb_type - all names are now lower case.
 
