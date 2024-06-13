@@ -1,5 +1,5 @@
 
-PPOL(ppol) - pewpew-overhail-lite ; version 1.0.0
+PPOL(ppol) - pewpew-overhail-lite ; version 1.0.1
 
 ppol is a lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. ppol adds new features to simplify certain development processes, such as mesh helpers, sound parser and camera framework. ppol also adds proper error messages to functions, that don't have them. Currently ppol is only compatible with singleplayer, as it is imposible to create custom levels for multiplayer anyway.
 
