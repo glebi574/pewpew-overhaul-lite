@@ -1,5 +1,5 @@
 
-PPOL(ppol) - pewpew-overhail-lite ; version 1.0.1
+PPOL(ppol) - pewpew-overhail-lite ; version 1.1.0
 
 ppol is a lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. ppol adds new features to simplify certain development processes, such as mesh helpers, sound parser and camera framework. ppol also adds proper error messages to functions, that don't have them. Currently ppol is only compatible with singleplayer, as it is imposible to create custom levels for multiplayer anyway.
 
@@ -115,6 +115,8 @@ FX_E - fx value of exponent
 
 ppol reuses pewpew library and modifies original functions, to define its own functions to interact with game environment.
 
+
+PLAYER_SHIP_SPEED - default ship of the player ship. You can change it and all new ship will have such speed. By default, 10fx.
 
 inputs - table, containing inputs from player joysticks and some of their interpretations.
   ma  - angle of movement joystick
@@ -263,7 +265,7 @@ int new_mothership(x, y, type, angle) - creates mothership ar a given location w
 
 int new_pointonium(x, y, v) - creates pointonium at a given location with score value, which should be 64, 128 or 256. Returns id of created pointonium.
 
-int new_player_ship(x, y) - creates player ship at a given location. Returns id of created player ship.
+int new_player_ship(x, y) - creates player ship at a given location and sets its speed to PLAYER_SHIP_SPEED. Returns id of created player ship.
 
 int new_player_bullet(x, y, angle) - creates player bullet at a given location with specified angle. Returns id of created bullet.
 

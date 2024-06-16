@@ -1,3 +1,5 @@
+PLAYER_SHIP_SPEED = 10fx
+
 local _et = pewpew.EntityType
 entity_type = {
   asteroid          = _et.ASTEROID,
@@ -246,7 +248,9 @@ new_pointonium = pewpew.new_pointonium
 
 local __new_player_ship = pewpew.new_player_ship
 function new_player_ship(x, y)
-  return __new_player_ship(x, y, 0)
+  local id =  __new_player_ship(x, y, 0)
+  set_player_ship_speed(id, PLAYER_SHIP_SPEED)
+  return id
 end
 
 local __new_player_bullet = pewpew.new_player_bullet
