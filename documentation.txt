@@ -364,15 +364,15 @@ nil preload_sounds(folder_path, ...) - preloads all listed sounds. Can be used t
 
 ppol has custom, highly customizable camera.
 
-There are lots of values, which can be used to modify camera behaviour.
+There are lots of parameters, which modify camera behaviour. There are some functions, that allow changing certain parameter or multiple parameters at once. You can change any parameter manually or using methods. Some parameters don't have functions to modify them, so you have to change them manually.
 
-Current values determine position and angle of camera at the moment and are usually handled by camera itself. Still, there are ways to change them manually.
+Current parameters determine position and angle of camera at the moment and are usually handled by camera itself. It is possible to change them, but you should use ease functions to modify them or other camera parameters, if you need to achieve certain cinematic effect.
 
-Offset, static, min and max values can be used for cinematic purposes.
+Offset, static, min and max parameters can be used for cinematic purposes.
 
 Joystick offsets can be used to give feedback on joystick usage.
 
-By default built-in ease functions are used. There are ways to change them to default, custom or use default camera movement from PewPew Live(no ease at all).
+By default camera has no ease. There are ways to change ease functions to built-in(with ease), custom or ones without ease(default camera behaviour in PewPew Live).
 
 
 camera_mode - modes, at which camera can function
