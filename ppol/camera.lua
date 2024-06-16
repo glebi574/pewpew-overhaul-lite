@@ -19,8 +19,6 @@ local function default_ease_xy(dx, dy)
     return dx / l * camera.speed, dy / l * camera.speed
   else
     local ndx, ndy = fx_sin(dx / 100fx) * camera.speed, fx_sin(dy / 100fx) * camera.speed
-    ndx = fx_abs(ndx) > fx_abs(dx) and dx or ndx
-    ndy = fx_abs(ndy) > fx_abs(dy) and dy or ndy
     return ndx, ndy
   end
 end
