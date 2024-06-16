@@ -44,6 +44,6 @@ add_post_update_callback(tick5)
 
 -- Player ship weapons
 
-set_player_ship_weapon(ship_id, cannon_frequency._30, cannon_type.double) -- sets cannon of specified ship to one of the defaults forever
-set_player_ship_weapon(ship_id, cannon_frequency._7_5, cannon_type.tic_toc, 120) -- sets cannon of specified ship to one of the powerups for 4 seconds
-set_player_ship_weapon(ship_id, cannon_frequency._7_5, cannon_type.tic_toc) -- sets cannon of specified ship to one of the powerups forever, but player's bullets will be used instead
+set_player_ship_weapon(ship_id, cannon_frequency[30], cannon_type.double) -- sets cannon of specified ship to one of the defaults forever
+set_player_ship_weapon(ship_id, cannon_frequency[7.5], cannon_type.tic_toc, 120) -- sets cannon of specified ship to one of the powerups for 4 seconds
+set_player_ship_weapon(ship_id, cannon_frequency[7.5], cannon_type.tic_toc) -- sets cannon of specified ship to one of the powerups forever, but player's bullets will be used instead
