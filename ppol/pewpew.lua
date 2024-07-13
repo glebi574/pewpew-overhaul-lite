@@ -235,10 +235,9 @@ function new_floating_message(x, y, str, scale, duration, is_optional)
 end
 
 local __new_customizable_entity = pewpew.new_customizable_entity
-local __customizable_entity_set_position_interpolation = pewpew.customizable_entity_set_position_interpolation
 function new_entity(x, y, v)
   local id = __new_customizable_entity(x, y)
-  __customizable_entity_set_position_interpolation(id, v or true)
+  entity_set_position_interpolation(id, v == nil or v)
   return id
 end
 
@@ -262,7 +261,7 @@ local __new_rolling_cube = pewpew.new_rolling_cube
 local __rolling_cube_set_enable_collisions_with_walls = pewpew.rolling_cube_set_enable_collisions_with_walls
 function new_rolling_cube(x, y, v)
   local id = __new_rolling_cube(x, y)
-  __rolling_cube_set_enable_collisions_with_walls(id, v or true)
+  __rolling_cube_set_enable_collisions_with_walls(id, v == nil or v)
   return id
 end
 
@@ -273,7 +272,7 @@ local __new_ufo = pewpew.new_ufo
 local __ufo_set_enable_collisions_with_walls = pewpew.ufo_set_enable_collisions_with_walls
 function new_ufo(x, y, dx, v)
   local id = __new_ufo(x, y, dx)
-  __ufo_set_enable_collisions_with_walls(id, v or true)
+  __ufo_set_enable_collisions_with_walls(id, v == nil or v)
   return id
 end
 
@@ -289,6 +288,8 @@ local __entity_react_to_weapon = pewpew.entity_react_to_weapon
 function entity_react_to_weapon(id, weapon_type, x, y)
   return __entity_react_to_weapon(id, {type = weapon_type, x = x, y = y, player_index = 0})
 end
+
+entity_set_position_interpolation = pewpew.customizable_entity_set_position_interpolation
 
 local __customizable_entity_set_mesh = pewpew.customizable_entity_set_mesh
 local __customizable_entity_set_flipping_meshes = pewpew.customizable_entity_set_flipping_meshes
@@ -310,7 +311,19 @@ entity_set_mesh_angle = pewpew.customizable_entity_set_mesh_angle
 entity_set_music_sync = pewpew.customizable_entity_configure_music_response
 entity_add_mesh_angle = pewpew.customizable_entity_add_rotation_to_mesh
 entity_set_render_radius = pewpew.customizable_entity_set_visibility_radius
-entity_set_wall_collision = pewpew.customizable_entity_configure_wall_collision
+
+local __customizable_entity_configure_wall_collision = pewpew.customizable_entity_configure_wall_collision
+function entity_set_wall_collision(id, v, f)
+  local t = get_entity_type(id)
+  if t == entity_type.custom then
+    __customizable_entity_configure_wall_collision(id, v, f)
+  elseif t == entity_type.rolling_cube then
+    __rolling_cube_set_enable_collisions_with_walls(id, v)
+  else
+    __ufo_set_enable_collisions_with_walls(id, v)
+  end
+end
+
 entity_set_player_collision = pewpew.customizable_entity_set_player_collision_callback
 entity_set_weapon_collision = pewpew.customizable_entity_set_weapon_collision_callback
 

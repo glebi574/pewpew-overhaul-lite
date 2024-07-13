@@ -62,3 +62,12 @@ function entity_set_mesh(id, path, i1, i2)
   end
   return __entity_set_mesh(id, path, i1, i2)
 end
+
+local __entity_set_wall_collision = entity_set_wall_collision
+function entity_set_wall_collision(id, v, f)
+  local t = get_entity_type(id)
+  if t == entity_type.custom or t == entity_type.rolling_cube or t == entity_type.ufo then
+    return __entity_set_wall_collision(id, v, f)
+  end
+  error'Error, configuring wall collision of an entity. Specified id doesn\'t refer to an entity with configurable wall collision.'
+end

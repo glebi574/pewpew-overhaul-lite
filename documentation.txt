@@ -1,5 +1,5 @@
 
-PPOL(ppol) - pewpew-overhail-lite ; version 1.1.0
+PPOL(ppol) - pewpew-overhail-lite ; version 1.1.1
 
 ppol is a lite variant of ppo. This variant focuses on keeping main pewpew features, renaming and slightly changing them to optimize development process. ppol adds new features to simplify certain development processes, such as mesh helpers, sound parser and camera framework. ppol also adds proper error messages to functions, that don't have them. Currently ppol is only compatible with singleplayer, as it is imposible to create custom levels for multiplayer anyway.
 
@@ -257,7 +257,7 @@ int new_crowder(x, y) - creates crowder at a given location. Returns id of crea
 
 int new_floating_message(x, y, str, scale, duration, is_optional) - creates floating message at a given location with specified string, scale of text for a given duration. is_optional specifies if message can be hidden, depending on user's UI settings. Returns id of created floating message.
 
-int new_entity(x, y, v) - creates custom entity at a given location and specifies if it has position interpolation inabled. If v isn't specified, position interpolation will be turned on. Returns id of created custom entity.
+int new_entity(x, y, v) - creates custom entity at a given location and specifies if it has position interpolation enabled. If v isn't specified, position interpolation will be turned on. Position interpolation can be later configured via entity_set_position_interpolation(). Returns id of created custom entity.
 
 int new_inertiac(x, y, acceleration, angle) - creates inertiac at a given location with specified speed and angle. Returns id of created inertiac.
 
@@ -269,13 +269,13 @@ int new_player_ship(x, y) - creates player ship at a given location and sets its
 
 int new_player_bullet(x, y, angle) - creates player bullet at a given location with specified angle. Returns id of created bullet.
 
-int new_rolling_cube(x, y, wall_collision) - creates rolling cube at a given location with specified wall collision option. If wall_collision isn't provided, wall collision will be turned on. Returns id of created rolling cube.
+int new_rolling_cube(x, y, wall_collision) - creates rolling cube at a given location with specified wall collision option. If wall_collision isn't provided, wall collision will be turned on. Wall collision can be later configured via entity_set_wall_collision(). Returns id of created rolling cube.
 
 int new_rolling_sphere(x, y, angle, speed) - creates rolling sphere at a given location with specified angle and speed. Returns id of created rolling sphere.
 
 int new_wary(x, y) - creates wary at a given location. Returns id of created wary.
 
-int new_ufo(x, y, dx, wall_collision) - creates ufo at a given location with specified horizontal speed dx and wall collision option. If wall_collision isn't provided, wall collision will be turned on. Returns id of created ufo.
+int new_ufo(x, y, dx, wall_collision) - creates ufo at a given location with specified horizontal speed dx and wall collision option. If wall_collision isn't provided, wall collision will be turned on. Wall collision can be later configured via entity_set_wall_collision(). Returns id of created ufo.
 
 fx, fx entity_get_pos(id) - returns position of entity with specified id.
 
@@ -292,6 +292,8 @@ nil entity_set_update_callback(id, f) - sets update callback to entity with spec
 nil entity_destroy(id) - destroys entity with specified id.
 
 nil entity_react_to_weapon(id, weapon_type, x, y) - forces entity with specified id to react to specified weapon from weapon_type. (x; y) is a vector, used to calculate collision effects for certain entities, such as inertiacs and should be vector of a weapon, entity reacts to.
+
+nil entity_set_position_interpolation(id, v) - sets wether position of custom entity with specified id, should be interpolated when rendering. This option makes it seem like entity move smoothly.
 
 nil entity_set_mesh(id, path, ...) - sets mesh of a custom entity with specified id to one, stored in file with specified path at a given index or indexes to make them flip between ticks, which allows creation of 60 fps animations. Inputs are:
   entity_set_mesh(id, path) - sets mesh of custom entity specified by id to mesh in file, described by path at index 0
@@ -328,7 +330,7 @@ nil entity_add_mesh_angle(id, v, x, y, z) - increases mesh angle of custom entit
 
 nil entity_set_render_radius(id, r) - sets render radius of custom entity with specified id. If entity is out of user's screen borders for a value, bigger than such radius, it won't be rendered.
 
-nil entity_set_wall_collision(id, wall_collision, callback) - sets wall collision and respective callback of custom entity with specified id. If callback is provided, it will be called on wall collision with arguments being: entity_id, wall_normal_x, wall_normal_y.
+nil entity_set_wall_collision(id, wall_collision, callback) - sets wall collision of custom entity, rolling cube or ufo. If entity is custom, also sets its wall collision callback. If callback is provided, it will be called on wall collision with arguments being: entity_id, wall_normal_x, wall_normal_y.
 
 nil entity_set_player_collision(id, callback) - sets player collision callback of custom entity with specified id. This callback will be called on collision with player ship with arguments being: entity_id, 0, ship_id.
 

@@ -171,9 +171,9 @@ pewpew.new_wary(x, y) -> new_wary(x, y)
 
 pewpew.new_ufo(x, y, dx) -> new_ufo(x, y, dx, v)
 
-pewpew.rolling_cube_set_enable_collisions_with_walls(id, v) - removed. It was united with pewpew.new_rolling_cube().
+pewpew.rolling_cube_set_enable_collisions_with_walls(id, v) - removed. It was united with pewpew.new_rolling_cube() and pewpew.customizable_entity_configure_wall_collision().
 
-pewpew.ufo_set_enable_collisions_with_walls(id, v) -> ufo_set_wall_collision(id, v) - removed. It was united with pewpew.new_ufo().
+pewpew.ufo_set_enable_collisions_with_walls(id, v) -> ufo_set_wall_collision(id, v) - removed. It was united with pewpew.new_ufo() and pewpew.customizable_entity_configure_wall_collision().
 
 pewpew.entity_get_position(id) -> entity_get_pos(id)
 
