@@ -1,6 +1,4 @@
 
-PPOL(ppol) - pewpew-overhail-lite ; 1.0.1
-
 This file contains all changes between ppol and ppl API.
 
 Certain changes in arguments of functions aren't mentioned there. See documentation for full information.

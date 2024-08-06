@@ -2,7 +2,7 @@ emoji_error    = '\u{1f6d1}'
 emoji_warning  = '\u{26a0}'
 emoji_nice     = '\u{2705}'
 
-PPOL_VERSION = '1.1.1'
+PPOL_VERSION = '1.1.2'
 
 function mpath(path)
   return string.format('%s%s%s', '/dynamic/', path ,'.lua')
