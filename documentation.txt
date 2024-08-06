@@ -45,7 +45,11 @@ string mpath(path) -  wraps file to standard, acceptable by PewPew Live. Usually
 
 nil ppo_require(...) - requires all inputed paths. Automatically wraps them as 'ppol/' .. mpath(path). Usually you won't need to call this function, it is used by ppol internally to require its files.
 
+nil printf(...) - prints formatted string. Inputs are same as for string.format(). Basically just a wrapper for it.
+
 int make_color(r, g, b, a) - returns color. Inputs are rgba components of a color.
+
+int, int, int, int to_rgba(color) - returns rgba components of a color. Input is color.
 
 int change_alpha(c, a) - returns color with alpha value changed to a new one. Inputs are color to be modified and new alpha value.
 
@@ -543,6 +547,12 @@ nil add_curve(mesh, color, ...) - adds set of consecutive lines to mesh. Similar
 
 nil add_circle(mesh, color, offset, r, precision, rx, ry, rz) - adds circle, rotated by certain angle and moved by certain offset. color input is similar to add_colors(). r is radius and precision is amount of points in circle. offset is table that contains xyz offset of circle after it was rotated; if offset is nil, it won't be applied; otherwise it should be a table, containing xyz coordinates, representing offset; any coordinates that aren't presented will still be set to 0. rx, ry, rz represent rotation by corresponding axis; if corresponding value isn't presented, it will be set to 0.
 
+nil add_vertex(mesh, v) - adds vertex v into vertexes table of specified mesh.
+
+nil add_segment(mesh, s) - adds segments s into segments table of specified mesh.
+
+nil add_color(mesh, c) - adds color c into colors table of specified mesh.
+
 table copy_vertexes(v, mod) - copies vertex table and returns the copy. Inputs are:
   copy_vertexes(v) - copies vertex table and returns the copy.
   copy_vertexes(v, mod) - copies vertex table and returns the copy. mod should be a function, used to modify vertex coordinates and return them. Inputs to this function are current index of vertex in vertex table and vertex itself.
@@ -570,6 +580,9 @@ nil mesh:add_lines(c, ...)
 nil mesh:add_polygon(c, ...)
 nil mesh:add_curve(c, ...)
 nil mesh:add_circle(c, offset, r, precision, rx, ry, rz)
+nil mesh:add_vertex(v)
+nil mesh:add_segment(s)
+nil mesh:add_color(c)
 table mesh:copy_vertexes(mod) - copies respective table from this mesh and returns it
 table mesh:copy_segments()
 table mesh:copy_colors()

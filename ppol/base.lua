@@ -24,12 +24,25 @@ function print(...) -- adds ability to use fx numbers with print and fixes their
   __print(table.unpack(output))
 end
 
+function printf(...)
+  return print(string.format(...))
+end
+
 if PPO_SOUND then
   return
 end
 
 function make_color(r, g, b, a)
 	return ((r * 256 + g) * 256 + b) * 256 + a
+end
+
+function to_rgba(color)
+  local c = {}
+  for i = 1, 4 do
+    c[#c + 1] = color % 256
+    color = color // 256
+  end
+  return c[4], c[3], c[2], c[1]
 end
 
 function change_alpha(c, a)

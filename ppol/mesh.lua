@@ -142,6 +142,18 @@ function add_circle(mesh, c, offset, r, precision, rx, ry, rz)
   add_polygon(mesh, c, table.unpack(v))
 end
 
+function add_vertex(mesh, v)
+  return table.insert(mesh.vertexes, v)
+end
+
+function add_segment(mesh, s)
+  return table.insert(mesh.segments, s)
+end
+
+function add_color(mesh, c)
+  return table.insert(mesh.colors, c)
+end
+
 function copy_vertexes(v, mod)
   local nv = {}
   if mod then
@@ -245,6 +257,18 @@ end
 
 function mesh_proto:add_circle(c, offset, r, precision, rx, ry, rz)
   return add_circle(self, c, offset, r, precision, rx, ry, rz)
+end
+
+function mesh_proto:add_vertex(v)
+  return table.insert(self.vertexes, v)
+end
+
+function mesh_proto:add_segment(s)
+  return table.insert(self.segments, s)
+end
+
+function mesh_proto:add_color(c)
+  return table.insert(self.colors, c)
 end
 
 function mesh_proto:copy_vertexes(mod)
